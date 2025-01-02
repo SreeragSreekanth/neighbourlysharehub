@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Login Page
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center mt-5" style="min-height: 80vh;">  <!-- Adjusted vertical alignment -->
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm mb-5">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Login</h3>
+                
+                <form action="/">
+                    <!-- Email Address -->
+                    <div class="mb-4 input-group">
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" aria-describedby="emailHelp">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4 input-group">
+                        <span class="input-group-text" id="basic-addon2">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" aria-describedby="passwordHelp">
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn btn-primary btn-sm w-100 mt-3" >
+                        Login
+                    </button>
+
+                    <!-- Sign Up Statement and Button -->
+                    <div class="text-center mt-3 d-flex justify-content-center">
+                        <p class="mb-0">Don't have an account? <a href="/signup/" class="text-decoration-none">Sign Up</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
