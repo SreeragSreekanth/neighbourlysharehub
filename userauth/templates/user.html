@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    User Dashboard
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">User Dashboard</h2>
+    
+    <!-- User Dashboard Content -->
+    <div class="row">
+        <div class="col-md-4">
+            <h5>My Profile</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/profile/edit">Edit Profile</a></li>
+                <li class="list-group-item"><a href="/profile/settings">Settings</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h5>My Items</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/items">My Listed Items</a></li>
+                <li class="list-group-item"><a href="/items/new">Post New Item</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h5>Requests</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/requests">My Requests</a></li>
+                <li class="list-group-item"><a href="/requests/new">Create Request</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

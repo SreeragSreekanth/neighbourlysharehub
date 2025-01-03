@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Valuator Dashboard
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Valuator Dashboard</h2>
+    
+    <!-- Valuator Dashboard Content -->
+    <div class="row">
+        <div class="col-md-4">
+            <h5>Category Management</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/valuator/categories">Manage Categories</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h5>Complaints</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/valuator/complaints">Manage Complaints</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

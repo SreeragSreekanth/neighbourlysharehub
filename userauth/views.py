@@ -7,22 +7,27 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 def Login(request):
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
+        username = request.POST['username']  
+        password = request.POST['password']  
 
         try:
-            # Fetch user by email
-            user_obj = Register.objects.get(email=email)
-            # Authenticate using the username
+            user_obj = Register.objects.get(username=username)
+
             user = authenticate(request, username=user_obj.username, password=password)
 
             if user is not None:
-                login(request, user)
-                return redirect('/')  # Replace '/' with your desired home view
+                login(request, user)  
+                if user_obj.role == 'admin':
+                    return redirect('/admindash/') 
+                elif user_obj.role == 'valuator':
+                    return redirect('/valuator/')  
+                else:
+                    return redirect('/user/') 
             else:
-                messages.error(request, 'Invalid email or password')
+                messages.error(request, 'Invalid username or password')
+
         except Register.DoesNotExist:
-            messages.error(request, 'No account found with this email')
+            messages.error(request, 'No account found with this username')
 
     return render(request, 'index.html', {'page_name': 'login'})
 
@@ -31,31 +36,46 @@ def aboutUs(request):
 
     fruits = ["apple","orange","grapes"]
     
-    return render(request,'about.html',{ 'name': "Sreerag", 'fruits':fruits})
+    return render(request,'about.html',{ 'name': "Sreerag", 'fruits':fruits, 'page_name':'about'})
 
 def userReg(request):
     if request.method == 'POST':
-        # Fetching form data from the POST request
-
         password = request.POST.get('password')
-
 
         form = RegisterForm(request.POST)
 
         if form.is_valid():
-            user = form.save(commit=False)
-            user.password = make_password(password)
-            user.save()
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
 
+            if Register.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists. Please choose a different one.')
+            elif Register.objects.filter(email=email).exists():
+                messages.error(request, 'Email already exists. Please use a different email address.')
+            else:
+                user = form.save(commit=False)
+                user.password = make_password(password)  
+                user.save()
+
+                messages.success(request, 'Account created successfully! You can now log in.')
+                return redirect('/login/')  
         else:
-            print(form.errors)
+            messages.error(request, 'Please fill all the fields correctly.')
+
     else:
-
         form = RegisterForm()
-        # Password validation: check if passwords match
 
-        # Render the signup page for GET requests
-    return render(request, 'signup.html', {'page_name': 'signup','form':form})
+    return render(request, 'signup.html', {'page_name': 'signup', 'form': form})
 
 def homeFun(request):
-    return render(request,'home.html')
+    return render(request,'home.html',{'page_name':'home'})
+
+def AdminDashboard(request):
+    return render(request, 'admin.html', {'page_name': 'admin'})
+
+def UserDashboard(request):
+    return render(request, 'user.html', {'page_name': 'user'})
+
+def ValuatorDashboard(request):
+    return render(request, 'valuator.html', {'page_name': 'valuator'})
+

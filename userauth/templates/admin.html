@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Admin Dashboard
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+    
+    <!-- Admin Dashboard Content -->
+    <div class="row">
+        <div class="col-md-3">
+            <h5>User Management</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/admin/users">Manage Users</a></li>
+                <li class="list-group-item"><a href="/admin/reports">View Reports</a></li>
+            </ul>
+        </div>
+        <div class="col-md-3">
+            <h5>Item Management</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="/admin/items">Manage Items</a></li>
+                <li class="list-group-item"><a href="/admin/complaints">Resolve Complaints</a></li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h5>Analytics</h5>
+            <!-- Place for Admin analytics or graphs -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Site Activity</h5>
+                    <p>Analytics content goes here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

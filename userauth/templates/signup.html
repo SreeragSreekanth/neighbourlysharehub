@@ -10,6 +10,17 @@
         <div class="card shadow-sm mb-5">
             <div class="card-body">
                 <h3 class="card-title text-center mb-4">Sign Up</h3>
+
+                <!-- Display messages (error, success) -->
+                {% if messages %}
+                    <div class="mb-3">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} text-center">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 
                 <!-- Handle POST request form submission -->
                 <form action="/signup/" method="POST">
