@@ -1,28 +1,38 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import *
 from django.contrib.auth.hashers import make_password
 
 # Create your views here.
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Register  # Adjust import based on your actual models
+
 def Login(request):
     if request.method == 'POST':
-        username = request.POST['username']  
-        password = request.POST['password']  
+        username = request.POST['username']
+        password = request.POST['password']
 
         try:
             user_obj = Register.objects.get(username=username)
 
+            # Authenticate user
             user = authenticate(request, username=user_obj.username, password=password)
 
             if user is not None:
-                login(request, user)  
-                if user_obj.role == 'admin':
-                    return redirect('/admindash/') 
+                login(request, user)  # Log the user in
+
+                # Check if the user is a superuser
+                if user.is_superuser:
+                    return redirect('/admindash/')  # Redirect to the Django admin panel
+
                 elif user_obj.role == 'valuator':
-                    return redirect('/valuator/')  
+                    return redirect('/valuator/')  # Redirect to valuator dashboard
                 else:
-                    return redirect('/user/') 
+                    return redirect('/user/')  # Redirect to regular user page
+
             else:
                 messages.error(request, 'Invalid username or password')
 
@@ -30,6 +40,10 @@ def Login(request):
             messages.error(request, 'No account found with this username')
 
     return render(request, 'index.html', {'page_name': 'login'})
+
+def logout_view(request):
+    logout(request) 
+    return redirect('/login/')
 
 def aboutUs(request):
     print("about")
@@ -55,6 +69,8 @@ def userReg(request):
             else:
                 user = form.save(commit=False)
                 user.password = make_password(password)  
+                user.role = 'user'
+
                 user.save()
 
                 messages.success(request, 'Account created successfully! You can now log in.')
@@ -73,8 +89,6 @@ def homeFun(request):
 def AdminDashboard(request):
     return render(request, 'admin.html', {'page_name': 'admin'})
 
-def UserDashboard(request):
-    return render(request, 'user.html', {'page_name': 'user'})
 
 def ValuatorDashboard(request):
     return render(request, 'valuator.html', {'page_name': 'valuator'})

@@ -1,0 +1,53 @@
+{% extends 'user_layout.html' %}
+
+{% block title %}
+    User Dashboard
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Content -->
+<div class="container mt-5">
+    <h2 class="text-center">Welcome, {{ user.username }}!</h2>
+    <p class="text-center">Here is your personalized dashboard.</p>
+
+    <!-- User Info -->
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Profile Information</h4>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+                <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+                <!-- Add more user details if necessary -->
+            </ul>
+            <a href="#" class="btn btn-primary mt-3">Edit Profile</a>
+        </div>
+
+        <!-- Manage Requests -->
+        <div class="col-md-4">
+            <h4>Manage Requests</h4>
+            <p>You can view or manage your requests here.</p>
+            <ul class="list-group">
+                <li class="list-group-item">Request 1</li>
+                <li class="list-group-item">Request 2</li>
+                <li class="list-group-item">Request 3</li>
+                <!-- Replace with dynamic request data -->
+            </ul>
+            <a href="#" class="btn btn-primary mt-3">View All Requests</a>
+        </div>
+
+        <!-- Notifications -->
+        <div class="col-md-4">
+            <h4>Notifications</h4>
+            <p>Stay updated with important notifications related to your activities.</p>
+            <ul class="list-group">
+                <li class="list-group-item">Notification 1</li>
+                <li class="list-group-item">Notification 2</li>
+                <li class="list-group-item">Notification 3</li>
+                <!-- Replace with dynamic notification data -->
+            </ul>
+            <a href="#" class="btn btn-primary mt-3">View All Notifications</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

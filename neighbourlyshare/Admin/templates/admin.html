@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'admin_layout.html' %}
 
 {% block title %}
     Admin Dashboard
@@ -10,13 +10,16 @@
     
     <!-- Admin Dashboard Content -->
     <div class="row">
+        <!-- User Management Section -->
         <div class="col-md-3">
             <h5>User Management</h5>
             <ul class="list-group">
-                <li class="list-group-item"><a href="/admin/users">Manage Users</a></li>
+                <li class="list-group-item"><a href="{% url 'userlist' %}">Manage Users</a></li>
                 <li class="list-group-item"><a href="/admin/reports">View Reports</a></li>
             </ul>
         </div>
+
+        <!-- Item Management Section -->
         <div class="col-md-3">
             <h5>Item Management</h5>
             <ul class="list-group">
@@ -24,7 +27,17 @@
                 <li class="list-group-item"><a href="/admin/complaints">Resolve Complaints</a></li>
             </ul>
         </div>
-        <div class="col-md-6">
+
+        <!-- Valuator Management Section -->
+        <div class="col-md-3">
+            <h5>Valuator Management</h5>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{% url 'valuatorlist' %}">Manage Valuators</a></li>
+            </ul>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="col-md-3">
             <h5>Analytics</h5>
             <!-- Place for Admin analytics or graphs -->
             <div class="card">

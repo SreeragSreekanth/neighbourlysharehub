@@ -25,18 +25,6 @@
                 <!-- Handle POST request form submission -->
                 <form action="/signup/" method="POST">
                     {% csrf_token %}
-                
-                    <!-- Role Dropdown -->
-                    <div class="mb-3">
-                        <label for="id_role" class="form-label">Role</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon8">
-                                <i class="bi bi-person-circle"></i>
-                            </span>
-                            {{ form.role }}
-                        </div>
-                    </div>
-                
                     <!-- First Name -->
                     <div class="mb-3">
                         <label for="id_first_name" class="form-label">First Name</label>

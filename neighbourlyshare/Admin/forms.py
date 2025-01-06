@@ -1,7 +1,9 @@
 from django import forms
 from .models import *
+from userauth.models import *
 
-class RegisterForm(forms.ModelForm):
+
+class ValuatorForm(forms.ModelForm):
     class Meta:
             model = Register
             fields = ['username','first_name','last_name','email','phone_number','password']
