@@ -19,6 +19,7 @@
                 <th scope="col">Username</th>
                 <th scope="col">Full Name</th>
                 <th scope="col">Phone Number</th>
+                <th scope="col">Email</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -29,11 +30,16 @@
                 <td>{{ valuator.username }}</td>
                 <td>{{ valuator.first_name }} {{ valuator.last_name }}</td>
                 <td>{{ valuator.phone_number }}</td>
+                <td>{{ valuator.email }}</td>
                 <td>
                     <!-- Edit Button -->
-                    <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'editvaluator' valuator.id %}" class="btn btn-warning btn-sm">Edit</a>
                     <!-- Delete Button -->
-                    <a href="{% url 'deletevaluator' valuator.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="{% url 'deletevaluator' valuator.id %}" 
+                        class="btn btn-danger btn-sm" 
+                        onclick="return confirm('Are you sure you want to delete this valuator?');">
+                        Delete
+                    </a>
                 </td>
             </tr>
             {% empty %}

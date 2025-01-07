@@ -1,9 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import ValuatorForm
 from userauth.models import Register
 from django.contrib import messages
 
+@login_required
 def add_valuator(request):
     print(request.method == 'POST')
     if request.method == 'POST':
@@ -26,18 +27,23 @@ def add_valuator(request):
 def AdminDashboard(request):
     return render(request, 'admin.html',{})
 
+@login_required
+
 def Valuatorlist(request):
     # Query to get all valuators (users with 'valuator' role)
     valuators = Register.objects.filter(role='valuator')
     
     return render(request, 'valuatorlist.html', {'valuators': valuators})
 
+
+@login_required
 def Userlist(request):
     # Query to get all valuators (users with 'valuator' role)
     users = Register.objects.filter(role='user')
     
     return render(request, 'userlist.html', {'users': users})
 
+@login_required
 def adduser(request):
     print(request.method == 'POST')
     if request.method == 'POST':
@@ -55,6 +61,7 @@ def adduser(request):
         form = ValuatorForm()
     return render(request,'adduser.html',{'form':form })
 
+@login_required
 def deleteuser(request, id):
     # Try to get the user by ID
     try:
@@ -69,6 +76,7 @@ def deleteuser(request, id):
     # Redirect back to the user list page after deletion
     return redirect('userlist')
 
+@login_required
 def deletevaluator(request, id):
     # Try to get the user by ID
     try:
@@ -82,3 +90,29 @@ def deletevaluator(request, id):
     
     # Redirect back to the user list page after deletion
     return redirect('valuatorlist')
+
+@login_required
+def edituser(request, id):
+    user = get_object_or_404(Register, id = id)  # Get user by ID
+    if request.method == 'POST':
+        form = ValuatorForm(request.POST, instance=user)  # Pass the existing user to the form
+        if form.is_valid():
+            form.save()  # Save the updated data
+            messages.success(request, 'User added successfully!')
+            return redirect('userlist')  # Redirect to the user management page
+    else:
+        form = ValuatorForm(instance=user)  # Prepopulate form with existing user data
+    return render(request, 'edituser.html', {'form': form, 'user': user})
+
+@login_required
+def editvaluator(request, id):
+    valuator = get_object_or_404(Register, id = id)  # Get user by ID
+    if request.method == 'POST':
+        form = ValuatorForm(request.POST, instance=valuator)  # Pass the existing user to the form
+        if form.is_valid():
+            form.save()  # Save the updated data
+            messages.success(request, 'Valuator added successfully!')
+            return redirect('valuatorlist')  # Redirect to the user management page
+    else:
+        form = ValuatorForm(instance=valuator)  # Prepopulate form with existing user data
+    return render(request, 'editvaluator.html', {'form': form, 'valuator': valuator})
