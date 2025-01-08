@@ -1,0 +1,27 @@
+{% extends 'item_layout.html' %}
+
+{% block title %}
+    {{ item.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="padding-bottom: 50px;"> <!-- Added padding-bottom to container -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="text-center">{{ item.title }}</h2>
+            <p>{{ item.description }}</p>
+
+            <div class="row">
+                {% for image in images %}
+                    <div class="col-md-4 mb-3">
+                        <img src="{{ image.image.url }}" class="img-fluid rounded" alt="Item Image">
+                    </div>
+                {% endfor %}
+            </div>
+
+            <p><strong>Posted by:</strong> {{ item.user.username }}</p>
+            <p><strong>Posted on:</strong> {{ item.date_posted|date:"d M Y" }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

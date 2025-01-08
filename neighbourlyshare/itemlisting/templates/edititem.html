@@ -1,0 +1,60 @@
+{% extends 'item_layout.html' %}
+
+{% block title %}
+    Edit {{ item.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="padding-bottom: 50px;"> <!-- Added padding-bottom to container -->
+    <div class="card mx-auto" style="max-width: 800px; margin-bottom: 100px;"> <!-- Added margin-bottom to card -->
+        <div class="card-body">
+            <h2 class="text-center mb-4">Edit Item</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Item Details -->
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" id="title" class="form-control" value="{{ item.title }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="description" id="description" class="form-control" required>{{ item.description }}</textarea>
+                </div>
+
+                <!-- Existing Images -->
+                <div class="mb-3">
+                    <label class="form-label">Existing Images</label>
+                    <div class="row">
+                        {% for image in images %}
+                            <div class="col-md-4 mb-3">
+                                <div class="position-relative">
+                                    <img src="{{ image.image.url }}" class="img-fluid rounded" alt="Item Image">
+                                    <form method="POST" action="{% url 'deleteitemimage' image.id %}" class="mt-2">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this image?');">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if not images %}
+                            <p class="text-muted">No images uploaded yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Upload New Images -->
+                <div class="mb-3">
+                    <label for="images" class="form-label">Add New Images</label>
+                    <input type="file" name="images" id="images" class="form-control" multiple>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Update Item</button>
+                    <a href="{% url 'viewitem' item.id %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
