@@ -1,5 +1,7 @@
+# models.py
 from django.db import models
 from userauth.models import Register
+from category_management.models import Category
 
 class Item(models.Model):
     """Model to represent an item listing."""
@@ -7,6 +9,13 @@ class Item(models.Model):
     description = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(Register, on_delete=models.CASCADE, related_name='items', null=True, blank=True)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='items'
+    )
 
     def __str__(self):
         return self.title
@@ -14,7 +23,11 @@ class Item(models.Model):
 class ItemImage(models.Model):
     """Model to represent an image for a specific item."""
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='images', null=True)
-    image = models.ImageField(upload_to="products/items/")
+    image = models.ImageField(upload_to="products/items/", null=True, blank=True)
 
     def __str__(self):
         return f"Image {self.id} for {self.item.title}"
+
+    def clean(self):
+        # Add custom validation if needed
+        super().clean()

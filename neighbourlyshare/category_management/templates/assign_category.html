@@ -1,0 +1,22 @@
+{% extends 'valuator_layout.html' %}
+
+{% block title %}Assign Category{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Assign Category to: {{ item.title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="category">Select Category:</label>
+            <select name="category" id="category" class="form-control">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Assign</button>
+        <a href="{% url 'viewitem' item.id %}" class="btn btn-secondary mt-3">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,42 +1,70 @@
-{% extends 'admin_layout.html' %}
+{% extends 'item_layout.html' %}
 
-{% block title %}
-    Add New Item
-{% endblock %}
+{% block title %}Add Item{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-    <h2 class="text-center mb-4">Add New Item</h2>
+<div class="container mt-5 mb-5"> <!-- Added mb-5 for bottom margin -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-4">Add a New Item</h2>
 
-    <!-- Display success or error messages -->
-    {% if messages %}
-        <div class="alert alert-success">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
+                    <form method="POST" enctype="multipart/form-data" class="mb-3">
+                        {% csrf_token %}
+                        {{ image_formset.management_form }}
+                        
+                        <div class="mb-4">
+                            {{ item_form.as_p }}
+                        </div>
 
-    <!-- Card for Add Item Form -->
-    <div class="card mx-auto" style="max-width: 500px;">
-        <div class="card-body">
-            <h5 class="card-title text-center mb-4">Add New Item</h5>
+                        <div id="image_formset" class="mb-4">
+                            <h4 class="mb-3">Images</h4>
+                            {% for form in image_formset %}
+                                <div class="image-form mb-3">
+                                    {{ form.image }}
+                                    {% if form.errors %}
+                                        <div class="alert alert-danger mt-2">
+                                            {{ form.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
 
-            <!-- Add Item Form -->
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <label for="title">Title:</label>
-                <input type="text" name="title" id="title" class="form-control" required>
-
-                <label for="description">Description:</label>
-                <textarea name="description" id="description" class="form-control" required></textarea>
-
-                <label for="images">Upload Images:</label>
-                <input type="file" name="images" id="images" class="form-control" multiple required>
-
-                <button type="submit" class="btn btn-primary mt-3">Add Item</button>
-            </form>
+                        <div class="d-grid gap-2">
+                            <button type="button" id="add_image_button" class="btn btn-info mb-3">Add Another Image</button>
+                            <button type="submit" class="btn btn-success mb-3">Submit Item</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('add_image_button').addEventListener('click', function() {
+    const forms = document.getElementsByClassName('image-form');
+    const formCount = forms.length;
+    const totalForms = document.querySelector('[name="form-TOTAL_FORMS"]');
+    
+    // Clone the first form
+    const newForm = forms[0].cloneNode(true);
+    
+    // Clear the input value
+    const fileInput = newForm.querySelector('input[type="file"]');
+    fileInput.value = '';
+    
+    // Update form index
+    fileInput.name = fileInput.name.replace('-0-', `-${formCount}-`);
+    fileInput.id = fileInput.id.replace('-0-', `-${formCount}-`);
+    
+    // Add the new form
+    document.getElementById('image_formset').appendChild(newForm);
+    
+    // Update total forms count
+    totalForms.value = formCount + 1;
+});
+</script>
 {% endblock %}

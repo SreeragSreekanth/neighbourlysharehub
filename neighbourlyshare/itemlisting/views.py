@@ -5,6 +5,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Item, ItemImage  # Make sure to import ItemImage
 from userauth.models import Register
 from django.core.paginator import Paginator
+from .forms import ItemForm, ItemImageForm
+from django.forms import modelformset_factory
+
+
 
 
 
@@ -24,27 +28,56 @@ def Displayitems(request):
 
 @login_required
 def additem(request):
-    if request.method == 'POST':
-        # Extract item details from the form
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        images = request.FILES.getlist('images')  # Get all uploaded files
+    ImageFormSet = modelformset_factory(
+        ItemImage, 
+        form=ItemImageForm,
+        extra=1,
+        can_delete=True
+    )
 
-        # Save the item
-        item = Item.objects.create(
-            title=title,
-            description=description,
-            user=request.user
+    if request.method == 'POST':
+        item_form = ItemForm(request.POST)
+        formset = ImageFormSet(
+            request.POST, 
+            request.FILES,
+            queryset=ItemImage.objects.none()
         )
 
-        # Save each image related to the item
-        for image in images:
-            ItemImage.objects.create(item=item, image=image)
+        if item_form.is_valid() and formset.is_valid():
+            # Save the item
+            item = item_form.save(commit=False)
+            # Get the Register instance associated with the current user
+            try:
+                register_user = Register.objects.get(username=request.user.username)
+                item.user = register_user  # Assign the Register instance
+                item.save()
 
-        return redirect('itemlist')  # Redirect to the item list page
+                # Save the images
+                for form in formset:
+                    if form.cleaned_data.get('image'):
+                        image = form.save(commit=False)
+                        image.item = item
+                        image.save()
 
-    return render(request, 'additem.html')
-    
+                messages.success(request, 'Item added successfully!')
+                return redirect('itemlist')
+            except Register.DoesNotExist:
+                messages.error(request, 'User profile not found.')
+                return redirect('itemlist')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        item_form = ItemForm()
+        formset = ImageFormSet(queryset=ItemImage.objects.none())
+
+    return render(request, 'additem.html', {
+        'item_form': item_form,
+        'image_formset': formset
+    })
+
+
+
+
 @login_required
 def deleteitem(request, id):
     # Retrieve the item using the item_id
@@ -74,36 +107,79 @@ def deleteitem(request, id):
 @login_required
 def viewitem(request, id):
     item = get_object_or_404(Item, id=id)
-    images = item.images.all()  # Fetch all associated images
+    images = item.images.all()  # Always fetch the latest images associated with the item
     return render(request, 'viewitem.html', {'item': item, 'images': images})
+
 
 @login_required
 def edititem(request, id):
-    # Get the item to be edited
     item = get_object_or_404(Item, pk=id)
+    ImageFormSet = modelformset_factory(
+        ItemImage, 
+        form=ItemImageForm,
+        extra=1,
+        can_delete=True,
+    )
 
-    # Check if the user is the owner of the item
-    if item.user != request.user:
+    if item.user.username != request.user.username:
         messages.error(request, "You are not authorized to edit this item.")
         return redirect('itemlist')
 
     if request.method == 'POST':
-        # Update the item's details
-        item.title = request.POST.get('title')
-        item.description = request.POST.get('description')
-        item.save()
+        item_form = ItemForm(request.POST, instance=item)
+        image_formset = ImageFormSet(
+            request.POST, 
+            request.FILES,
+            queryset=ItemImage.objects.filter(item=item)
+        )
+        
+        if item_form.is_valid() and image_formset.is_valid():
+            try:
+                # Save the item
+                edited_item = item_form.save()
 
-        # Handle image uploads
-        new_images = request.FILES.getlist('images')  # Get new images
-        for image in new_images:
-            ItemImage.objects.create(item=item, image=image)
+                # Handle the formset
+                instances = image_formset.save(commit=False)
+                
+                # Save new images
+                for instance in instances:
+                    if instance.image:  # Only save if there's actually an image
+                        instance.item = edited_item
+                        instance.save()
+                
+                # Handle deletions
+                for obj in image_formset.deleted_objects:
+                    if obj.image:
+                        if obj.image.path and os.path.exists(obj.image.path):
+                            try:
+                                os.remove(obj.image.path)
+                            except Exception as e:
+                                print(f"Error deleting image file: {e}")
+                    obj.delete()
 
-        messages.success(request, "Item updated successfully!")
-        return redirect('viewitem', id=item.id)
+                # Save the formset to process any deletions
+                image_formset.save()
 
-    # Pass the item and its images to the template
-    images = item.images.all()
-    return render(request, 'edititem.html', {'item': item, 'images': images})
+                messages.success(request, "Item updated successfully!")
+                return redirect('viewitem', id=item.id)
+                
+            except Exception as e:
+                messages.error(request, f"Error saving changes: {str(e)}")
+        else:
+            for form in image_formset:
+                if form.errors:
+                    print("Form errors:", form.errors)
+            messages.error(request, "Please correct the errors below.")
+    else:
+        item_form = ItemForm(instance=item)
+        image_formset = ImageFormSet(queryset=ItemImage.objects.filter(item=item))
+
+    return render(request, 'edititem.html', {
+        'item_form': item_form,
+        'image_formset': image_formset,
+        'item': item,
+        'existing_images': ItemImage.objects.filter(item=item)
+    })
 
 @login_required
 def deleteitemimage(request, id):
