@@ -1,0 +1,31 @@
+{% extends 'user_layout.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h3>Conversation with {{ partner.username }}</h3>
+
+    <!-- Message History -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <ul class="list-group">
+                {% for message in messages %}
+                    <li class="list-group-item{% if message.sender == request.user %} text-end{% else %} text-start{% endif %}">
+                        <strong>{{ message.sender.username }}</strong>
+                        <p>{{ message.content }}</p>
+                        <small class="text-muted">Sent on {{ message.timestamp|date:"d M Y, H:i" }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Reply Form -->
+    <h5 class="mt-4">Reply to this conversation</h5>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Send Reply</button>
+    </form>
+    <a href="{% url 'message_inbox' %}" class="btn btn-secondary mt-3">Back to Inbox</a>
+</div>
+{% endblock %}

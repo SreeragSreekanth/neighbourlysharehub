@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'itemlisting',
     'category_management',
     'widget_tweaks',
+    'messaging',
 
 ]
 

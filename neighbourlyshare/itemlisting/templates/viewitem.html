@@ -7,7 +7,13 @@
 {% block content %}
 <div class="container my-5" style="padding-bottom: 50px;">
     <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card-body position-relative">
+
+            <!-- Message Button -->
+            <a href="{% url 'send_message' receiver_id=item.user.id %}" class="btn btn-primary position-absolute top-0 end-0 m-3">
+                Message
+            </a>
+
             <!-- Header Section -->
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <a href="{% url 'itemlist' %}" class="btn btn-secondary">Back</a>
@@ -15,50 +21,40 @@
             </div>
 
             <!-- Category Section -->
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <h5 class="text-muted">Category</h5>
-                    <div class="badge bg-primary text-white py-2 px-4 rounded-pill">
-                        {{ item.category.name|default:"Uncategorized" }}
-                    </div>
-                </div>
+            <div class="text-center mb-4">
+                <h5 class="text-muted">Category</h5>
+                <span class="badge bg-primary text-white py-2 px-4 rounded-pill">
+                    {{ item.category.name|default:"Uncategorized" }}
+                </span>
             </div>
 
             <!-- Average Rating Section -->
-            <div class="row mb-4">
-                <div class="col-12 text-center">
-                    <h5 class="text-muted">Average Rating</h5>
-                    <p class="badge bg-warning text-dark py-2 px-4 rounded-pill">
-                        {{ item.average_rating|floatformat:1 }} / 5
-                    </p>
-                </div>
+            <div class="text-center mb-4">
+                <h5 class="text-muted">Average Rating</h5>
+                <span class="badge bg-warning text-dark py-2 px-4 rounded-pill">
+                    {{ item.average_rating|floatformat:1 }} / 5
+                </span>
             </div>
 
             <!-- Images Section -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <h5 class="text-muted text-center">Images</h5>
-                    <div class="d-flex justify-content-center flex-wrap gap-3">
-                        {% for image in images %}
-                            <div class="p-2" style="width: 250px;">
-                                <img src="{{ image.image.url }}" class="img-fluid rounded shadow-sm w-100" alt="Item Image" style="height: 200px; object-fit: cover;">
-                            </div>
-                        {% empty %}
-                            <p class="text-muted text-center">No images available for this item.</p>
-                        {% endfor %}
-                    </div>
+            <div class="mb-4">
+                <h5 class="text-muted text-center">Images</h5>
+                <div class="d-flex justify-content-center flex-wrap gap-3">
+                    {% for image in images %}
+                        <div class="p-2" style="width: 250px;">
+                            <img src="{{ image.image.url }}" class="img-fluid rounded shadow-sm w-100" alt="Item Image" style="height: 200px; object-fit: cover;">
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">No images available for this item.</p>
+                    {% endfor %}
                 </div>
             </div>
 
-
-
             <!-- Description Section -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <h5 class="text-muted text-center">Description</h5>
-                    <div class="border rounded shadow-sm p-3">
-                        <p class="text-center">{{ item.description }}</p>
-                    </div>
+            <div class="mb-5">
+                <h5 class="text-muted text-center">Description</h5>
+                <div class="border rounded shadow-sm p-3">
+                    <p class="text-center">{{ item.description }}</p>
                 </div>
             </div>
 
@@ -72,69 +68,58 @@
                 </div>
             </div>
 
-            <!-- Review Form Section (Only for non-owners) -->
+            <!-- Review Form -->
             {% if request.user != item.user %}
-            <div class="row mb-5">
-                <div class="col-lg-8 mx-auto">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            {% if request.user.is_authenticated %}
-                                <h5 class="text-center text-muted mb-4">Leave a Review</h5>
-                                <form method="POST" class="px-4">
-                                    {% csrf_token %}
-                                    <div class="mb-4">
-                                        {{ form.rating.label_tag }}
-                                        {{ form.rating }}
-                                    </div>
-                                    <div class="mb-4">
-                                        {{ form.review_text.label_tag }}
-                                        {{ form.review_text }}
-                                    </div>
-                                    <div class="d-flex justify-content-center">
-                                        <button type="submit" class="btn btn-success btn-lg px-5">
-                                            Submit Review
-                                        </button>
-                                    </div>
-                                </form>
-                            {% else %}
-                                <p class="text-center text-muted fs-5">You must be logged in to leave a review.</p>
-                            {% endif %}
-                        </div>
+            <div class="mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        {% if request.user.is_authenticated %}
+                            <h5 class="text-center text-muted mb-4">Leave a Review</h5>
+                            <form method="POST" class="px-4">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    {{ form.rating.label_tag }}
+                                    {{ form.rating }}
+                                </div>
+                                <div class="mb-4">
+                                    {{ form.review_text.label_tag }}
+                                    {{ form.review_text }}
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success btn-lg px-5">Submit Review</button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <p class="text-center text-muted fs-5">You must be logged in to leave a review.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             {% endif %}
 
             <!-- Reviews Section -->
-            <div class="row">
-                <div class="col-12">
-                    <h5 class="text-muted">Reviews</h5>
-                    
-                    <!-- Existing Reviews -->
-                    {% if reviews %}
-                        <ul class="list-group mb-4">
-                            {% for review in reviews %}
-                                <li class="list-group-item mb-3">  <!-- Add margin-bottom -->
-                                    <strong>{{ review.reviewer.username }}</strong> ({{ review.rating }} Stars)
-                                    <p class="mb-1">{{ review.review_text }}</p>
-                                    <small class="text-muted">Posted on {{ review.created_at|date:"d M Y" }}</small>
-
-                                    {% if review.reviewer == request.user %}
-                                        <!-- Edit and Delete buttons for the review owner -->
-                                        <div class="mt-2">
-                                            <a href="{% url 'edit_review' review.id %}" class="btn btn-warning btn-sm">Edit</a>
-                                            <a href="{% url 'delete_review' review.id %}" class="btn btn-danger btn-sm">Delete</a>
-                                        </div>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted">No reviews yet for this item.</p>
-                    {% endif %}
-                </div>
+            <div>
+                <h5 class="text-muted">Reviews</h5>
+                {% if reviews %}
+                    <ul class="list-group mb-4">
+                        {% for review in reviews %}
+                            <li class="list-group-item mb-3">
+                                <strong>{{ review.reviewer.username }}</strong> ({{ review.rating }} Stars)
+                                <p class="mb-1">{{ review.review_text }}</p>
+                                <small class="text-muted">Posted on {{ review.created_at|date:"d M Y" }}</small>
+                                {% if review.reviewer == request.user %}
+                                    <div class="mt-2">
+                                        <a href="{% url 'edit_review' review.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="{% url 'delete_review' review.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No reviews yet for this item.</p>
+                {% endif %}
             </div>
-
         </div>
     </div>
 </div>
