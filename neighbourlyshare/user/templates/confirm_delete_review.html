@@ -1,0 +1,31 @@
+{% extends 'item_layout.html' %}
+
+{% block title %}
+    Confirm Delete Review
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <h3 class="text-danger">Are you sure you want to delete your review for the item "{{ review.item.title }}"?</h3>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            
+            <!-- Delete and Cancel Buttons Section -->
+            <div class="d-flex justify-content-center gap-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        Delete Review
+                    </button>
+                </form>
+                <a href="{% url 'viewitem' id=review.item.id %}" class="btn btn-secondary btn-lg">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

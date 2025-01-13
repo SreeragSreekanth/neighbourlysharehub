@@ -18,7 +18,9 @@
                     <div class="card shadow-sm" style="height: 100%;"> <!-- Auto height for uniform card size -->
                         {% if item.images.exists %}
                             <!-- Display the first image of the item as the thumbnail -->
-                            <img src="{{ item.images.first.image.url }}" class="card-img-top" alt="{{ item.title }}" style="height: 180px; object-fit: cover;">
+                            <div class="d-flex justify-content-center">
+                                <img src="{{ item.images.first.image.url }}" class="card-img-top" alt="{{ item.title }}" style="max-width: 180px; min-height: 390px;">
+                            </div>
                         {% else %}
                             <!-- Placeholder if no image exists -->
                             <img src="https://via.placeholder.com/180" class="card-img-top" alt="No Image Available" style="height: 180px; object-fit: cover;">
@@ -26,6 +28,17 @@
                         <div class="card-body p-3">
                             <h5 class="card-title h6" style="font-size: 1rem;">{{ item.title }}</h5>
                             <p class="card-text"><small class="text-muted">Posted on {{ item.date_posted|date:"d M Y" }}</small></p>
+                            
+                            <!-- Approval Status Indicator -->
+                            <p>
+                                {% if item.status == 'approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif item.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </p>
 
                             <!-- View, Edit, and Delete buttons -->
                             <a href="{% url 'viewitem' item.id %}" class="btn btn-primary btn-sm">View</a>

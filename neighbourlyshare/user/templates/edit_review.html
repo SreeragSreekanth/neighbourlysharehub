@@ -1,0 +1,27 @@
+{% extends 'item_layout.html' %}
+
+{% block title %}
+    Edit Review
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3>Edit Review for {{ review.item.title }}</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-4">
+                    {{ form.rating.label_tag }}
+                    {{ form.rating }}
+                </div>
+                <div class="mb-4">
+                    {{ form.review_text.label_tag }}
+                    {{ form.review_text }}
+                </div>
+                <button type="submit" class="btn btn-success">Update Review</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

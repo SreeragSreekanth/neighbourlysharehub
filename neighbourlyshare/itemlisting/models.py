@@ -1,7 +1,8 @@
-# models.py
 from django.db import models
 from userauth.models import Register
 from category_management.models import Category
+from django.db.models import Avg
+
 
 class Item(models.Model):
     """Model to represent an item listing."""
@@ -16,9 +17,17 @@ class Item(models.Model):
         blank=True,
         related_name='items'
     )
+    status = models.CharField(
+        max_length=20,
+        choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        default='pending',  # Default status is 'pending'
+    )
 
     def __str__(self):
         return self.title
+    
+    def average_rating(self):
+        return self.ratings.aggregate(Avg('rating'))['rating__avg'] or 0
 
 class ItemImage(models.Model):
     """Model to represent an image for a specific item."""
@@ -31,3 +40,4 @@ class ItemImage(models.Model):
     def clean(self):
         # Add custom validation if needed
         super().clean()
+

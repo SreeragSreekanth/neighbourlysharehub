@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'user',
     'Admin',
     'itemlisting',
-    'category_management'
+    'category_management',
+    'widget_tweaks',
+
 ]
 
 MIDDLEWARE = [

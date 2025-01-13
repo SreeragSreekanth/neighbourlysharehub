@@ -1,0 +1,76 @@
+{% extends 'user_layout.html' %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+    Item Listing
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Search and Filter Form -->
+    <form method="GET" class="mb-4">
+        <div class="row">
+            <!-- Search Bar -->
+            <div class="col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="search-addon">Search</span>
+                    {{ form.q|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">Category</span>
+                    {{ form.category|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <!-- Sort By Filter -->
+            <div class="col-md-4 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">Sort By</span>
+                    {{ form.sort_by|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-md-12 text-center mb-3">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+        </div>
+    </form>
+
+    <!-- Item Listing -->
+    <div class="row">
+        {% if items %}
+            {% for item in items %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if item.images.exists %}
+                            <!-- Display the first image of the item as the thumbnail -->
+                            <div class="d-flex justify-content-center">
+                                <img src="{{ item.images.first.image.url }}" class="card-img-top" alt="{{ item.title }}" style="max-width: 180px; min-height: 390px;">
+                            </div>
+                        {% else %}
+                            <!-- Placeholder if no image exists -->
+                            <img src="https://via.placeholder.com/180" class="card-img-top" alt="No Image Available" style="height: 180px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.title }}</h5>
+                            <p class="card-text">{{ item.description|truncatechars:100 }}</p>
+                            <a href="{% url 'viewitem' item.id %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p class="text-muted text-center">No items found matching your criteria.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

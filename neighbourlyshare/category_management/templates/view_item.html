@@ -1,0 +1,67 @@
+{% extends 'valuator_layout.html' %}
+
+{% block title %}
+    View Item - {{ item.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Item title and description -->
+            <h2 class="mb-3">{{ item.title }}</h2>
+            <p class="mb-4">{{ item.description }}</p>
+
+            <!-- Item metadata -->
+            <div class="mb-4">
+                <p><strong>Posted by:</strong> {{ item.user.username }}</p>
+                <p><strong>Posted on:</strong> {{ item.date_posted|date:"d M Y" }}</p>
+            </div>
+
+            <!-- Display item images -->
+            <div class="mb-4">
+                <h5>Item Images:</h5>
+                <div class="row">
+                    {% for image in item.images.all %}
+                        <div class="col-md-4">
+                            <img src="{{ image.image.url }}" class="img-fluid mb-3" alt="Item Image">
+                        </div>
+                    {% empty %}
+                        <p>No images available for this item.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Category selection form -->
+            <form method="POST" class="mb-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" name="category" id="category" {% if item.approved %}disabled{% endif %}>
+                        <option value="" {% if item.category is None %} selected {% endif %}>Uncategorized</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if item.category == category %} selected {% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary" {% if item.approved %}disabled{% endif %}>Save Changes</button>
+                    
+                    {% if item.approved %}
+                        <span class="text-success">This item has been approved.</span>
+                    {% else %}
+                        <form method="POST" action="{% url 'approve_item' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">Approve Item</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

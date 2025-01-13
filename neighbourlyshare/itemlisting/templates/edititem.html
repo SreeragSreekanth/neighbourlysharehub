@@ -10,45 +10,62 @@
                 <div class="card-body p-4">
                     <h2 class="card-title mb-4">Edit Item</h2>
 
+                    <!-- Form for editing the item; action URL points to the 'edititem' view for this specific item -->
                     <form action="{% url 'edititem' item.id %}" method="POST" enctype="multipart/form-data" class="mb-3">
                         {% csrf_token %}
                         {{ image_formset.management_form }}
-                        
+
+                        <!-- Render item form fields, like title, description, category, etc. -->
                         <div class="mb-4">
                             {{ item_form.as_p }}
                         </div>
 
                         {% if existing_images %}
+                        <!-- Display current images if there are any, with options to delete them -->
                         <div class="mb-4">
                             <h4 class="mb-3">Current Images</h4>
                             <div class="row">
-                                {% for form in image_formset %}
-                                    {{form}}
+                                {% for image in existing_images %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card">
+                                        <img src="{{ image.image.url }}" class="card-img-top img-fluid rounded" alt="Item Image">
+                                        <div class="card-body text-center">
+                                            <!-- Link to delete the image -->
+                                            <a href="{% url 'deleteitemimage' image.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% endfor %}
                             </div>
                         </div>
                         {% endif %}
 
+                        <!-- Remove the image formset section if not needed (no image addition) -->
+                        <!--
                         <div id="image_formset" class="mb-4">
                             <h4 class="mb-3">Add New Images (Optional)</h4>
                             <div id="dynamic-image-forms">
                                 {% for form in image_formset %}
-                                {% if not form.instance.pk %}
+                                    {% if not form.instance.pk %}
                                     <div class="image-form mb-3">
-                                        {{ form.image }}
+                                        <div class="input-group">
+                                            {{ form.image }}
+                                        </div>
                                         {% if form.errors %}
-                                            <div class="alert alert-danger mt-2">
-                                                {{ form.errors }}
-                                            </div>
+                                        <div class="alert alert-danger mt-2">
+                                            {{ form.errors }}
+                                        </div>
                                         {% endif %}
                                     </div>
-                                {% endif %}
+                                    {% endif %}
                                 {% endfor %}
                             </div>
+                            <button type="button" id="add-image-button" class="btn btn-info">Add Another Image</button>
                         </div>
+                        -->
 
+                        <!-- Submit and Cancel buttons -->
                         <div class="d-grid gap-2">
-                            <button type="button" id="add_image_button" class="btn btn-info mb-3">Add Another Image</button>
                             <button type="submit" class="btn btn-success mb-3">Save Changes</button>
                             <a href="{% url 'viewitem' item.id %}" class="btn btn-secondary">Cancel</a>
                         </div>
@@ -59,5 +76,41 @@
     </div>
 </div>
 
+<script>
+    // JavaScript for dynamic image form handling (commented out, not needed for this version)
+    document.addEventListener('DOMContentLoaded', function () {
+        const addImageButton = document.getElementById('add-image-button');
+        const dynamicImageForms = document.getElementById('dynamic-image-forms');
+        let totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+
+        addImageButton.addEventListener('click', function () {
+            const formCount = parseInt(totalForms.value);
+            const newForm = dynamicImageForms.children[0].cloneNode(true);
+
+            // Update the new form's attributes to match the new formset index
+            const regex = new RegExp(`form-(\\d+)-`, 'g');
+            newForm.innerHTML = newForm.innerHTML.replace(regex, `form-${formCount}-`);
+
+            // Clear the file input in the cloned form
+            const fileInput = newForm.querySelector('input[type="file"]');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+
+            // Correctly update the name and id attributes for each input field
+            const inputs = newForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.name = input.name.replace(regex, `form-${formCount}-`);
+                input.id = input.id.replace(regex, `form-${formCount}-`);
+            });
+
+            // Append the new form to the container
+            dynamicImageForms.appendChild(newForm);
+
+            // Update the management form's total forms count
+            totalForms.value = formCount + 1;
+        });
+    });
+</script>
 
 {% endblock %}

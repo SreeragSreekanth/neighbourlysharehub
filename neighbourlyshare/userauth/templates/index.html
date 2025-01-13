@@ -11,16 +11,16 @@
             <div class="card-body">
                 <h3 class="card-title text-center mb-4">Login</h3>
                 
-                <!-- Display success or error messages -->
-                {% if messages %}
+                <!-- Display success or error messages
+                {% if login_messages %}
                     <div class="mb-3">
-                        {% for message in messages %}
+                        {% for message in login_messages %}
                             <div class="alert alert-{{ message.tags }} text-center">
                                 {{ message }}
                             </div>
                         {% endfor %}
                     </div>
-                {% endif %}
+                {% endif %} -->
                 
                 <!-- Use POST method to securely send form data -->
                 <form action="/login/" method="POST">

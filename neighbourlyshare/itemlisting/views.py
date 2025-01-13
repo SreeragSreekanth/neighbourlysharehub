@@ -5,8 +5,12 @@ from django.contrib.auth.decorators import login_required
 from .models import Item, ItemImage  # Make sure to import ItemImage
 from userauth.models import Register
 from django.core.paginator import Paginator
-from .forms import ItemForm, ItemImageForm
+from .forms import ItemForm, ItemImageForm, ItemSearchForm
 from django.forms import modelformset_factory
+from django.http import HttpResponseForbidden
+from django.db.models import Q
+from user.forms import RatingForm
+from user.models import Rating
 
 
 
@@ -16,14 +20,14 @@ from django.forms import modelformset_factory
 @login_required
 def Displayitems(request):
     # Fetch all items (you can filter by user if needed)
-    items = Item.objects.all()  # Fetch all items, or you can filter by user: Item.objects.filter(user=request.user)
+    items = Item.objects.filter(user=request.user)
     
     # Paginate items
     paginator = Paginator(items, 6)  # Show 6 items per page
     page_number = request.GET.get('page')  # Get the page number from URL query parameters
     page_obj = paginator.get_page(page_number)  # Get the current page object
 
-    return render(request, 'itemlist.html', {'page_obj': page_obj})  # Pass paginated items to template
+    return render(request, 'itemlist.html', {'page_obj': page_obj, })  # Pass paginated items to template
 
 
 @login_required
@@ -72,7 +76,7 @@ def additem(request):
 
     return render(request, 'additem.html', {
         'item_form': item_form,
-        'image_formset': formset
+        'image_formset': formset,
     })
 
 
@@ -104,11 +108,42 @@ def deleteitem(request, id):
     # Redirect to the item list page after deletion
     return redirect('itemlist')
 
+
 @login_required
 def viewitem(request, id):
     item = get_object_or_404(Item, id=id)
-    images = item.images.all()  # Always fetch the latest images associated with the item
-    return render(request, 'viewitem.html', {'item': item, 'images': images})
+    ratings = Rating.objects.filter(item=item).order_by('-created_at')
+    reviews = ratings  # Assign reviews to ratings
+    
+    # Fetch the images related to the item
+    images = ItemImage.objects.filter(item=item)  # This fetches all images related to the item
+    
+    # Check if the current user has already rated the item
+    existing_rating = Rating.objects.filter(item=item, reviewer=request.user).first()
+    
+    if request.method == 'POST' and request.user.is_authenticated:
+        if existing_rating:
+            # If the user has already rated, you can update the rating instead of adding a new one
+            form = RatingForm(request.POST, instance=existing_rating)
+        else:
+            form = RatingForm(request.POST)
+        
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.item = item
+            rating.reviewer = request.user
+            rating.reviewee = item.user
+            rating.save()
+    else:
+        form = RatingForm(instance=existing_rating if existing_rating else None)
+    
+    return render(request, 'viewitem.html', {
+        'item': item,
+        'ratings': ratings,
+        'reviews': reviews,  # Pass the reviews to the template
+        'form': form,
+        'images': images,  # Pass the images to the template
+    })
 
 
 @login_required
@@ -133,11 +168,12 @@ def edititem(request, id):
             queryset=ItemImage.objects.filter(item=item)
         )
         
-        if item_form.is_valid() and image_formset.is_valid():
+        if item_form.is_valid() or image_formset.is_valid():
             try:
                 # Save the item
                 edited_item = item_form.save()
-
+                edited_item.status = 'pending'  # Assuming 'pending' is a valid status
+                edited_item.save() 
                 # Handle the formset
                 instances = image_formset.save(commit=False)
                 
@@ -161,7 +197,7 @@ def edititem(request, id):
                 image_formset.save()
 
                 messages.success(request, "Item updated successfully!")
-                return redirect('viewitem', id=item.id)
+                return redirect('itemlist')
                 
             except Exception as e:
                 messages.error(request, f"Error saving changes: {str(e)}")
@@ -181,6 +217,11 @@ def edititem(request, id):
         'existing_images': ItemImage.objects.filter(item=item)
     })
 
+
+
+
+
+
 @login_required
 def deleteitemimage(request, id):
     # Fetch the image
@@ -197,3 +238,36 @@ def deleteitemimage(request, id):
         messages.error(request, "You are not authorized to delete this image.")
 
     return redirect('edititem', id=image.item.id)
+
+@login_required
+def item_listing(request):
+    # Instantiate the form and process user input
+    form = ItemSearchForm(request.GET)
+    
+    # Filter only approved items
+    items = Item.objects.filter(status='approved')
+
+    if form.is_valid():
+        query = form.cleaned_data['q']
+        category_filter = form.cleaned_data['category']
+        sort_by = form.cleaned_data['sort_by']
+
+        # Search filtering
+        if query:
+            # Filter by title and description separately
+            items = items.filter(title__icontains=query) | items.filter(description__icontains=query)
+
+        # Category filter
+        if category_filter:
+            items = items.filter(category=category_filter)
+
+        # Sorting
+        if sort_by == 'date_asc':
+            items = items.order_by('date_posted')
+        elif sort_by == 'date_desc':
+            items = items.order_by('-date_posted')
+        elif sort_by == 'title':
+            items = items.order_by('title')
+
+    # Provide the form and the filtered items to the template
+    return render(request, 'item_listing.html', {'form': form, 'items': items})

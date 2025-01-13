@@ -12,5 +12,7 @@ urlpatterns = [
     path('valuatorlist/delete/<int:id>/', views.deletevaluator, name="deletevaluator"),
     path('userlist/edit/<int:id>/', views.edituser, name="edituser"),
     path('valuatorlist/edit/<int:id>/', views.editvaluator, name="editvaluator"),
+    path('admindas/items/', views.adminitem, name="items"),
+    
    
 ]

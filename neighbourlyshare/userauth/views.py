@@ -3,14 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import *
 from django.contrib.auth.hashers import make_password
-
-# Create your views here.
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
 from .models import Register  # Adjust import based on your actual models
 
 def Login(request):
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -39,7 +35,7 @@ def Login(request):
         except Register.DoesNotExist:
             messages.error(request, 'No account found with this username')
 
-    return render(request, 'index.html', {'page_name': 'login'})
+    return render(request, 'index.html', {'page_name': 'login',})
 
 def logout_view(request):
     logout(request) 
@@ -81,7 +77,7 @@ def userReg(request):
     else:
         form = RegisterForm()
 
-    return render(request, 'signup.html', {'page_name': 'signup', 'form': form})
+    return render(request, 'signup.html', {'page_name': 'signup', 'form': form,})
 
 def homeFun(request):
     return render(request,'home.html',{'page_name':'home'})
