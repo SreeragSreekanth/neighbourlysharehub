@@ -1,0 +1,29 @@
+{% extends 'user_layout.html' %}
+
+{% block title %}
+    Create Exchange Request
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Offer Item</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4>Requesting: {{ requested_item.title }}</h4>
+            <hr>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.offered_item.label_tag }}
+                    {{ form.offered_item }}
+                </div>
+                <div class="mb-3">
+                    {{ form.message.label_tag }}
+                    {{ form.message }}
+                </div>
+                <button type="submit" class="btn btn-success">Submit Request</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

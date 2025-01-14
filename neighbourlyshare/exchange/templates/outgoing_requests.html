@@ -1,0 +1,16 @@
+{% extends 'user_layout.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2>Outgoing Exchange Requests</h2>
+    <ul class="list-group">
+        {% for request in requests %}
+            <li class="list-group-item">
+                You offered <strong>{{ request.offered_item.title }}</strong> for <strong>{{ request.requested_item.title }}</strong>.
+                <span class="badge {% if request.status == 'pending' %}bg-warning{% elif request.status == 'accepted' %}bg-success{% else %}bg-danger{% endif %}">
+                    {{ request.status }}
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

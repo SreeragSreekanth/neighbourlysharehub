@@ -9,10 +9,19 @@
     <div class="card shadow-sm">
         <div class="card-body position-relative">
 
-            <!-- Message Button -->
-            <a href="{% url 'send_message' receiver_id=item.user.id %}" class="btn btn-primary position-absolute top-0 end-0 m-3">
-                Message
-            </a>
+            <!-- Action Buttons -->
+            {% if request.user != item.user %}
+            <div class="d-flex justify-content-end gap-3 m-3">
+                <!-- Message Button -->
+                <a href="{% url 'send_message' receiver_id=item.user.id %}" class="btn btn-primary">
+                    Message
+                </a>
+                <!-- Request Exchange Button -->
+                <a href="{% url 'create_request' item.id %}" class="btn btn-success">
+                    Request Exchange
+                </a>
+            </div>
+            {% endif %}
 
             <!-- Header Section -->
             <div class="d-flex align-items-center justify-content-between mb-4">

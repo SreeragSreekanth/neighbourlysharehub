@@ -1,0 +1,26 @@
+{% extends 'user_layout.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Your Notifications</h1>
+    
+    <!-- "Mark All as Read" Button -->
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'mark_all_as_read' %}" class="btn btn-secondary">Mark All as Read</a>
+    </div>
+
+    <ul class="list-group">
+        {% for notification in notifications %}
+            <li class="list-group-item {% if not notification.is_read %}font-weight-bold{% endif %}">
+                <a href="{% url 'notification_detail' notification.id %}">
+                    {{ notification.message }}
+                </a>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted">No notifications available.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

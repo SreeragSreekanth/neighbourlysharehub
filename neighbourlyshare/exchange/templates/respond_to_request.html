@@ -1,0 +1,12 @@
+{% extends 'user_layout.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2>Respond to Exchange Request</h2>
+    <p>{{ exchange_request.offered_by.username }} offered <strong>{{ exchange_request.offered_item.title }}</strong> for your item <strong>{{ exchange_request.requested_item.title }}</strong>.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button name="action" value="accept" class="btn btn-success">Accept</button>
+        <button name="action" value="decline" class="btn btn-danger">Decline</button>
+    </form>
+</div>
+{% endblock %}

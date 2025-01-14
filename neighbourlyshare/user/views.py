@@ -2,11 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Rating
 from .forms import RatingForm
-
+from notifications.models import Notification
+from exchange.models import ExchangeRequest
 
 @login_required
-def Userdashboard(request):
-    return render(request, 'user.html',{})
+def user_dashboard(request):
+    user = request.user
+    notifications = Notification.objects.filter(user=user).order_by('-created_at')
+    recent_requests = ExchangeRequest.objects.filter(
+        offered_by=user
+    ).select_related('requested_item', 'offered_item').order_by('-created_at')
+
+    context = {
+        'user': user,
+        'notifications': notifications,
+        'recent_requests': recent_requests,
+    }
+    return render(request, 'user.html', context)
+
 
 @login_required
 def edit_review(request, id):

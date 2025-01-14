@@ -1,0 +1,32 @@
+{% extends 'user_layout.html' %}
+
+{% block title %}
+    Request Details
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Request Details</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Request Information</h5>
+            <p><strong>Requested Item:</strong> {{ exchange_request.requested_item.title }}</p>
+            <p><strong>Offered Item:</strong> {{ exchange_request.offered_item.title }}</p>
+            <p><strong>Offered By:</strong> {{ exchange_request.offered_by.username }}</p>
+            <p><strong>Message:</strong> {{ exchange_request.message }}</p>
+            <p><strong>Status:</strong>
+                {% if exchange_request.status == "pending" %}
+                    <span class="text-warning">Pending</span>
+                {% elif exchange_request.status == "accepted" %}
+                    <span class="text-success">Accepted</span>
+                {% else %}
+                    <span class="text-danger">Rejected</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <a href="{% url 'request_list' %}" class="btn btn-secondary mt-3">Back to Requests</a>
+</div>
+{% endblock %}

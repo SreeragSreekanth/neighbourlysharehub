@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'category_management',
     'widget_tweaks',
     'messaging',
-
+    'exchange',
+    'notifications',
 ]
 
 MIDDLEWARE = [

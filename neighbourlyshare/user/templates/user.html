@@ -1,53 +1,62 @@
 {% extends 'user_layout.html' %}
 
-{% block title %}
-    User Dashboard
-{% endblock %}
+{% block title %}User Dashboard{% endblock %}
 
 {% block content %}
-<!-- Dashboard Content -->
 <div class="container mt-5">
     <h2 class="text-center">Welcome, {{ user.username }}!</h2>
-    <p class="text-center">Here is your personalized dashboard.</p>
+    <p class="text-center">Manage your activities and stay updated.</p>
 
-    <!-- User Info -->
+    <!-- Dashboard Sections -->
     <div class="row">
+        <!-- Profile Overview -->
         <div class="col-md-4">
-            <h4>Profile Information</h4>
+            <h4>Profile</h4>
             <ul class="list-group">
                 <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
-                <!-- Add more user details if necessary -->
             </ul>
             <a href="#" class="btn btn-primary mt-3">Edit Profile</a>
         </div>
 
-        <!-- Manage Requests -->
-        <div class="col-md-4">
-            <h4>Manage Requests</h4>
-            <p>You can view or manage your requests here.</p>
-            <ul class="list-group">
-                <li class="list-group-item">Request 1</li>
-                <li class="list-group-item">Request 2</li>
-                <li class="list-group-item">Request 3</li>
-                <!-- Replace with dynamic request data -->
-            </ul>
-            <a href="#" class="btn btn-primary mt-3">View All Requests</a>
-        </div>
-
-        <!-- Notifications -->
+        <!-- Notifications Overview -->
         <div class="col-md-4">
             <h4>Notifications</h4>
-            <p>Stay updated with important notifications related to your activities.</p>
+            {% if notifications %}
+                <ul class="list-group">
+                    {% for notification in notifications|slice:":3" %}
+                        <li class="list-group-item {% if not notification.is_read %}bg-light{% endif %}">
+                            {{ notification.message }}
+                            <a href="{% url 'notification_detail' notification.id %}" class="btn btn-sm btn-primary">View</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No new notifications.</p>
+            {% endif %}
+            <a href="{% url 'notification_list' %}" class="btn btn-secondary mt-3">View All Notifications</a>
+        </div>
+
+        <!-- Requests Overview -->
+        <div class="col-md-4">
+            <h4>Requests</h4>
             <ul class="list-group">
-                <li class="list-group-item">Notification 1</li>
-                <li class="list-group-item">Notification 2</li>
-                <li class="list-group-item">Notification 3</li>
-                <!-- Replace with dynamic notification data -->
+                {% for request in recent_requests|slice:":3" %}
+                    <li class="list-group-item">
+                        {{ request.offered_item.title }} for {{ request.requested_item.title }}
+                        <span class="badge bg-info">{{ request.get_status_display }}</span>
+                    </li>
+                {% endfor %}
             </ul>
-            <a href="#" class="btn btn-primary mt-3">View All Notifications</a>
+            <a href="{% url 'request_list' %}" class="btn btn-secondary mt-3">View All Requests</a>
         </div>
     </div>
-</div>
 
+    <!-- Quick Links -->
+    <div class="mt-5 text-center">
+        <a href="#" class="btn btn-success">Post New Item</a>
+        <a href="#" class="btn btn-info">Manage Shared Items</a>
+        <a href="#" class="btn btn-warning">Account Settings</a>
+    </div>
+</div>
 {% endblock %}

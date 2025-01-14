@@ -1,0 +1,14 @@
+{% extends 'user_layout.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2>Incoming Exchange Requests</h2>
+    <ul class="list-group">
+        {% for request in requests %}
+            <li class="list-group-item">
+                {{ request.offered_by.username }} offered <strong>{{ request.offered_item.title }}</strong> for your item <strong>{{ request.requested_item.title }}</strong>.
+                <a href="{% url 'respond_to_request' request.id %}" class="btn btn-sm btn-primary">Respond</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

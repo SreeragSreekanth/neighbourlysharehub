@@ -13,6 +13,9 @@ urlpatterns = [
     path('', include('itemlisting.urls')),
     path('', include('category_management.urls')),
     path('',include('messaging.urls')),
+    path('', include('exchange.urls')),
+    path('', include('notifications.urls')),
+
 
     ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
 
