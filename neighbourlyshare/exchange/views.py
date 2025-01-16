@@ -5,7 +5,8 @@ from itemlisting.models import Item
 from django.contrib.auth.decorators import login_required
 from .forms import ExchangeRequestForm
 from django.contrib import messages
-from notifications.models import Notification  # Import the Notification model
+from notifications.models import Notification
+
 
 
 
@@ -20,6 +21,14 @@ def create_request(request, item_id):
             exchange_request.requested_item = requested_item
             exchange_request.offered_by = request.user
             exchange_request.save()
+
+            # Create a notification for the item owner
+            Notification.objects.create(
+                user=requested_item.user,
+                message=f"You have a new exchange request for your item {requested_item.title}",
+                notification_type=Notification.NEW_MESSAGE
+            )
+
             return redirect('request_list')
     else:
         form = ExchangeRequestForm(user=request.user)  # Pass user to the form
@@ -47,8 +56,20 @@ def respond_to_request(request, request_id):
         action = request.POST.get('action')
         if action == 'accept':
             exchange_request.status = 'accepted'
+            # Send notification to the user who requested the item
+            Notification.objects.create(
+                user=exchange_request.offered_by,
+                message=f"Your exchange request for {exchange_request.requested_item.title} has been accepted.",
+                notification_type=Notification.APPROVAL
+            )
         elif action == 'decline':
             exchange_request.status = 'declined'
+            # Send notification to the user who requested the item
+            Notification.objects.create(
+                user=exchange_request.offered_by,
+                message=f"Your exchange request for {exchange_request.requested_item.title} has been declined.",
+                notification_type=Notification.REJECTION
+            )
         exchange_request.save()
         return redirect('incoming_requests')
     return render(request, 'respond_to_request.html', {'exchange_request': exchange_request})
@@ -126,25 +147,21 @@ def handle_request(request, request_id):
         if action == "accept":
             exchange_request.status = "accepted"
             messages.success(request, "You have accepted the request.")
+            # Send notification to the user who created the request
+            Notification.objects.create(
+                user=exchange_request.offered_by,
+                message=f"Your exchange request for {exchange_request.requested_item.title} has been accepted.",
+                notification_type=Notification.APPROVAL
+            )
         elif action == "reject":
             exchange_request.status = "declined"
             messages.info(request, "You have rejected the request.")
+            # Send notification to the user who created the request
+            Notification.objects.create(
+                user=exchange_request.offered_by,
+                message=f"Your exchange request for {exchange_request.requested_item.title} has been declined.",
+                notification_type=Notification.REJECTION
+            )
         exchange_request.save()
 
     return redirect('request_list')
-
-def send_request(request, request_id):
-    # Example where a user sends a request for an item
-    exchange_request = ExchangeRequest.objects.get(id=request_id)
-    recipient = exchange_request.offered_by  # The user who receives the request
-
-    # Trigger a notification
-    notification_message = f"You have a new exchange request for your item: {exchange_request.offered_item.title}"
-    Notification.objects.create(
-        user=recipient,
-        message=notification_message,
-        item=exchange_request.offered_item
-    )
-
-    # After the notification is created, render a response
-    return render(request, 'request_sent.html', {'notification_message': notification_message})

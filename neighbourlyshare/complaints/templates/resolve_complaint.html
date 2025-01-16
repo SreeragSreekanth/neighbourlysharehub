@@ -1,0 +1,21 @@
+{% extends 'valuator_layout.html' %}
+{% block title %}Resolve Complaint{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>Resolve Complaint #{{ complaint.id }}</h2>
+    <div class="card my-4">
+        <div class="card-body">
+            <h5 class="card-title">Item: {{ complaint.item.title }}</h5>
+            <p><strong>User:</strong> {{ complaint.user.username }}</p>
+            <p><strong>Description:</strong> {{ complaint.description }}</p>
+            <p><strong>Date Filed:</strong> {{ complaint.created_at|date:"d M Y, H:i" }}</p>
+        </div>
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Mark as Resolved</button>
+        <a href="{% url 'complaints_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

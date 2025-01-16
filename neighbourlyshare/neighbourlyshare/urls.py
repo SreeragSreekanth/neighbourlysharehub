@@ -15,6 +15,7 @@ urlpatterns = [
     path('',include('messaging.urls')),
     path('', include('exchange.urls')),
     path('', include('notifications.urls')),
+    path('', include('complaints.urls')),
 
 
     ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

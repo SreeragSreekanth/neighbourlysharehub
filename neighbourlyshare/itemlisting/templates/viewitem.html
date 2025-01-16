@@ -40,6 +40,11 @@
             <!-- Average Rating Section -->
             <div class="text-center mb-4">
                 <h5 class="text-muted">Average Rating</h5>
+                <div class="d-flex justify-content-center mt-2">
+                    {% for i in range_5 %}
+                        <i class="bi {% if item.average_rating >= i %}bi-star-fill{% else %}bi-star{% endif %} text-warning"></i>
+                    {% endfor %}
+                </div>
                 <span class="badge bg-warning text-dark py-2 px-4 rounded-pill">
                     {{ item.average_rating|floatformat:1 }} / 5
                 </span>
@@ -113,7 +118,13 @@
                     <ul class="list-group mb-4">
                         {% for review in reviews %}
                             <li class="list-group-item mb-3">
-                                <strong>{{ review.reviewer.username }}</strong> ({{ review.rating }} Stars)
+                                <strong>{{ review.reviewer.username }}</strong>
+                                <!-- Display review rating with stars -->
+                                <div class="d-flex justify-content-start mb-2">
+                                    {% for i in range_5 %}
+                                        <i class="bi {% if review.rating >= i %}bi-star-fill{% else %}bi-star{% endif %} text-warning"></i>
+                                    {% endfor %}
+                                </div>
                                 <p class="mb-1">{{ review.review_text }}</p>
                                 <small class="text-muted">Posted on {{ review.created_at|date:"d M Y" }}</small>
                                 {% if review.reviewer == request.user %}
@@ -129,6 +140,7 @@
                     <p class="text-muted">No reviews yet for this item.</p>
                 {% endif %}
             </div>
+
         </div>
     </div>
 </div>

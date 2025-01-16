@@ -6,64 +6,42 @@
 
 {% block content %}
 <div class="container my-5">
-    <!-- Dashboard Cards Section -->
+    <!-- Dashboard Analytics Cards Section -->
     <div class="row mb-5">
         <!-- Total Categories -->
-        <!-- Total Categories -->
         <div class="col-md-4 mb-4">
-            <div class="card border-primary shadow-sm">
+            <div class="card border-primary shadow-sm h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title text-primary">Total Categories</h5>
-                    <h3 class="display-5">{{ category_count }}</h3>
-                    <a href="{% url 'category_list' %}" class="btn btn-primary btn-sm mt-3">Manage Categories</a>
+                    <h3 class="mb-3">{{ total_categories }}</h3>
+                    <p class="text-muted">Total number of categories in the system.</p>
+                    <a href="{% url 'category_list' %}" class="btn btn-primary btn-sm mt-3">View Categories</a>
                 </div>
             </div>
         </div>
+
         <!-- Pending Items -->
         <div class="col-md-4 mb-4">
-            <div class="card border-warning shadow-sm">
+            <div class="card border-warning shadow-sm h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title text-warning">Pending Items</h5>
-                    <h3 class="display-5">{{ pending_items_count }}</h3>
+                    <h3 class="mb-3">{{ total_pending_items }}</h3>
+                    <p class="text-muted">Total number of items pending approval.</p>
                     <a href="{% url 'approval_needed' %}" class="btn btn-warning btn-sm mt-3">Review Items</a>
                 </div>
             </div>
         </div>
+
         <!-- Approved Items -->
         <div class="col-md-4 mb-4">
-            <div class="card border-success shadow-sm">
+            <div class="card border-success shadow-sm h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title text-success">Approved Items</h5>
-                    <h3 class="display-5">{{ approved_items_count }}</h3>
+                    <h3 class="mb-3">{{ total_approved_items }}</h3>
+                    <p class="text-muted">Total number of approved items.</p>
                     <a href="{% url 'item_management' %}" class="btn btn-success btn-sm mt-3">View Approved</a>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <pre>
-        Category Count: {{ category_count }}
-        Pending Items Count: {{ pending_items_count }}
-        Approved Items Count: {{ approved_items_count }}
-    </pre>
-    
-    <!-- Recent Activities Section -->
-    <div class="card shadow-sm mb-5">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Recent Activities</h5>
-        </div>
-        <div class="card-body">
-            {% if recent_activities %}
-                <ul class="list-group">
-                    {% for activity in recent_activities %}
-                        <li class="list-group-item">
-                            <strong>{{ activity.timestamp|date:"d M Y H:i" }}</strong>: {{ activity.description }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted">No recent activities found.</p>
-            {% endif %}
         </div>
     </div>
 
@@ -74,7 +52,7 @@
         </div>
         <div class="card-body text-center mb-5">
             <p>Manage user reviews in the system.</p>
-            <a href="#" class="btn btn-dark">Manage Reviews</a>
+            <a href="{% url 'complaints_list' %}" class="btn btn-dark">Manage Complaints</a>
         </div>
     </div>
 </div>

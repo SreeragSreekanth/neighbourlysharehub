@@ -7,12 +7,48 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Admin Dashboard</h2>
-    
-    <!-- Dashboard Sections -->
+
+    <!-- Top Row: Analytics Cards -->
     <div class="row g-4">
+        <!-- Number of Users -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Total Users</h5>
+                    <h3 class="mb-3 text-primary">{{ total_users }}</h3>
+                    <p class="text-muted">Total number of users in the system.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number of Items -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Total Items</h5>
+                    <h3 class="mb-3 text-success">{{ total_items }}</h3>
+                    <p class="text-muted">Total number of items available in the system.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number of Valuators -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Total Valuators</h5>
+                    <h3 class="mb-3 text-warning">{{ total_valuators }}</h3>
+                    <p class="text-muted">Total number of valuators assigned in the system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Sections: Management -->
+    <div class="row g-4 mt-4">
         <!-- User Management Section -->
         <div class="col-lg-3 col-md-6">
-            <div class="card shadow border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">User Management</h5>
                     <p class="text-muted">Manage users and review reports.</p>
@@ -23,7 +59,7 @@
 
         <!-- Item Management Section -->
         <div class="col-lg-3 col-md-6">
-            <div class="card shadow border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Item Management</h5>
                     <p class="text-muted">Oversee items and handle complaints.</p>
@@ -34,39 +70,28 @@
 
         <!-- Valuator Management Section -->
         <div class="col-lg-3 col-md-6">
-            <div class="card shadow border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Valuator Management</h5>
                     <p class="text-muted">Manage valuators and their activities.</p>
-                    <a href="{% url 'valuatorlist' %}" class="btn btn-primary btn-sm w-100">Manage Valuators</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Analytics Section -->
-        <div class="col-lg-3 col-md-6">
-            <div class="card shadow border-0">
-                <div class="card-body text-center">
-                    <h5 class="card-title mb-3">Site Analytics</h5>
-                    <p class="text-muted">Track and analyze site activity.</p>
-                    <a href="/admin/analytics" class="btn btn-primary btn-sm w-100">View Analytics</a>
+                    <a href="{% url 'valuatorlist' %}" class="btn btn-primary btn-sm w-100 mb-2">Manage Valuators</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Additional Dashboard Features -->
-    <div class="mt-5">
+    <div class="mt-5 mb-5">
         <h4 class="mb-3">Quick Actions</h4>
         <div class="row g-3">
             <div class="col-md-4">
-                <a href="/admin/settings" class="btn btn-success btn-lg w-100">Update Settings</a>
+                <a href="#" class="btn btn-success btn-lg w-100">Update Settings</a>
             </div>
             <div class="col-md-4">
-                <a href="/admin/logs" class="btn btn-warning btn-lg w-100">View Logs</a>
+                <a href="#" class="btn btn-warning btn-lg w-100">View Logs</a>
             </div>
             <div class="col-md-4">
-                <a href="/admin/help" class="btn btn-info btn-lg w-100">Help & Support</a>
+                <a href="#" class="btn btn-info btn-lg w-100">Help & Support</a>
             </div>
         </div>
     </div>

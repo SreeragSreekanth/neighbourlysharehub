@@ -28,7 +28,17 @@ def add_valuator(request):
 
 @login_required
 def AdminDashboard(request):
-    return render(request, 'admin.html',{})
+    total_users = Register.objects.count()
+    total_items = Item.objects.count()
+    total_valuators = Register.objects.filter(role='valuator').count()
+
+    context = {
+        'total_users': total_users,
+        'total_items': total_items,
+        'total_valuators': total_valuators,
+    }
+
+    return render(request, 'admin.html', context)
 
 @login_required
 

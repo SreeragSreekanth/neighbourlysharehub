@@ -1,0 +1,35 @@
+{% extends 'user_layout.html' %}
+
+{% block title %}File a Complaint{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">File a Complaint</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Title Field -->
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">Complaint Title</label>
+            {{ form.title }}  <!-- Render the title field with widget applied -->
+        </div>
+
+        <!-- Description Field -->
+        <div class="mb-3">
+            <label for="{{ form.description.id_for_label }}" class="form-label">Complaint Description</label>
+            {{ form.description }}  <!-- Render the description field with widget applied -->
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-danger btn-lg">Submit Complaint</button>
+        </div>
+    </form>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{% url 'user' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

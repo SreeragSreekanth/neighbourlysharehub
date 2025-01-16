@@ -4,15 +4,24 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2>Notification Detail</h2>
-    <p><strong>Message:</strong> {{ notification.message }}</p>
-    <p><strong>Date:</strong> {{ notification.created_at|date:"D M Y H:i" }}</p>
-    {% if not notification.is_read %}
-        <form method="post" action="{% url 'mark_as_read' notification.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Mark as Read</button>
-        </form>
-    {% endif %}
-    <a href="{% url 'notification_list' %}" class="btn btn-secondary mt-3">Back to Notifications</a>
+    <h2 class="text-center mb-4">Notification Detail</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Message:</h4>
+            <p class="card-text">{{ notification.message }}</p>
+            <h5 class="card-title">Date:</h5>
+            <p class="card-text">{{ notification.created_at|date:"D, M d, Y H:i" }}</p>
+
+            {% if not notification.is_read %}
+            <form method="post" action="{% url 'mark_as_read' notification.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Mark as Read</button>
+            </form>
+            {% endif %}
+
+            <a href="{% url 'notification_list' %}" class="btn btn-secondary mt-3">Back to Notifications</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -11,6 +11,8 @@ from django.http import HttpResponseForbidden
 from django.db.models import Q
 from user.forms import RatingForm
 from user.models import Rating
+from notifications.utils import create_notification
+
 
 
 
@@ -63,6 +65,8 @@ def additem(request):
                         image.item = item
                         image.save()
 
+                create_notification(user=request.user, message="Your item has been successfully added to the platform!")
+
                 messages.success(request, 'Item added successfully!')
                 return redirect('itemlist')
             except Register.DoesNotExist:
@@ -114,20 +118,12 @@ def viewitem(request, id):
     item = get_object_or_404(Item, id=id)
     ratings = Rating.objects.filter(item=item).order_by('-created_at')
     reviews = ratings  # Assign reviews to ratings
-    
-    # Fetch the images related to the item
-    images = ItemImage.objects.filter(item=item)  # This fetches all images related to the item
-    
-    # Check if the current user has already rated the item
+
+    images = ItemImage.objects.filter(item=item)
     existing_rating = Rating.objects.filter(item=item, reviewer=request.user).first()
-    
+
     if request.method == 'POST' and request.user.is_authenticated:
-        if existing_rating:
-            # If the user has already rated, you can update the rating instead of adding a new one
-            form = RatingForm(request.POST, instance=existing_rating)
-        else:
-            form = RatingForm(request.POST)
-        
+        form = RatingForm(request.POST, instance=existing_rating) if existing_rating else RatingForm(request.POST)
         if form.is_valid():
             rating = form.save(commit=False)
             rating.item = item
@@ -136,14 +132,16 @@ def viewitem(request, id):
             rating.save()
     else:
         form = RatingForm(instance=existing_rating if existing_rating else None)
-    
+
     return render(request, 'viewitem.html', {
         'item': item,
         'ratings': ratings,
-        'reviews': reviews,  # Pass the reviews to the template
+        'reviews': reviews,
         'form': form,
-        'images': images,  # Pass the images to the template
+        'images': images,
+        'range_5': range(1, 6),  # Pass a range to the template
     })
+
 
 
 @login_required

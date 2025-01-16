@@ -4,23 +4,30 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Your Notifications</h1>
-    
-    <!-- "Mark All as Read" Button -->
-    <div class="d-flex justify-content-end mb-3">
-        <a href="{% url 'mark_all_as_read' %}" class="btn btn-secondary">Mark All as Read</a>
-    </div>
+    <h2 class="text-center mb-4">Your Notifications</h2>
 
-    <ul class="list-group">
+    {% if notifications %}
+    <div class="list-group">
         {% for notification in notifications %}
-            <li class="list-group-item {% if not notification.is_read %}font-weight-bold{% endif %}">
-                <a href="{% url 'notification_detail' notification.id %}">
-                    {{ notification.message }}
-                </a>
-            </li>
-        {% empty %}
-            <li class="list-group-item text-muted">No notifications available.</li>
+            <a href="{% url 'notification_detail' notification.id %}" class="list-group-item list-group-item-action {% if not notification.is_read %}bg-light{% endif %}">
+                <div class="d-flex justify-content-between">
+                    <span><strong>{{ notification.created_at|date:"D, M d, Y H:i" }}</strong></span>
+                    {% if not notification.is_read %}
+                        <span class="badge bg-danger">New</span>
+                    {% endif %}
+                </div>
+                <p>{{ notification.message|truncatewords:20 }}</p>
+            </a>
         {% endfor %}
-    </ul>
+    </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No notifications available.
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'mark_all_as_read' %}" class="btn btn-primary">Mark All as Read</a>
+    </div>
 </div>
 {% endblock %}

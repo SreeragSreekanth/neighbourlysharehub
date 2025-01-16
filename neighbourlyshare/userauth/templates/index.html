@@ -11,17 +11,6 @@
             <div class="card-body">
                 <h3 class="card-title text-center mb-4">Login</h3>
                 
-                <!-- Display success or error messages
-                {% if login_messages %}
-                    <div class="mb-3">
-                        {% for message in login_messages %}
-                            <div class="alert alert-{{ message.tags }} text-center">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %} -->
-                
                 <!-- Use POST method to securely send form data -->
                 <form action="/login/" method="POST">
                     {% csrf_token %}
@@ -46,6 +35,11 @@
                     <button type="submit" class="btn btn-primary btn-sm w-100 mt-3">
                         Login
                     </button>
+
+                    <!-- Forgot Password Link -->
+                    <div class="text-center mt-3">
+                        <a href="/password-reset/" class="text-decoration-none">Forgot Password?</a>
+                    </div>
 
                     <!-- Sign Up Statement and Button -->
                     <div class="text-center mt-3 d-flex justify-content-center">

@@ -4,6 +4,21 @@ from django.contrib import messages
 from .forms import *
 from django.contrib.auth.hashers import make_password
 from .models import Register  # Adjust import based on your actual models
+from django.contrib.auth import get_user_model
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from .tokens import email_verification_token
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import EmailMultiAlternatives
+# from django.contrib.auth.forms import SetPasswordForm
+# from django.contrib.auth.views import PasswordResetConfirmView
+
+
+
 
 def Login(request):
 
@@ -41,12 +56,6 @@ def logout_view(request):
     logout(request) 
     return redirect('/login/')
 
-def aboutUs(request):
-    print("about")
-
-    fruits = ["apple","orange","grapes"]
-    
-    return render(request,'about.html',{ 'name': "Sreerag", 'fruits':fruits, 'page_name':'about'})
 
 def userReg(request):
     if request.method == 'POST':
@@ -66,10 +75,12 @@ def userReg(request):
                 user = form.save(commit=False)
                 user.password = make_password(password)  
                 user.role = 'user'
-
+                user.is_active = False
                 user.save()
 
-                messages.success(request, 'Account created successfully! You can now log in.')
+                send_verification_email(request, user)  # Send verification email
+
+                messages.success(request, 'Registration successful! Please verify your email to activate your account.')
                 return redirect('/login/')  
         else:
             messages.error(request, 'Please fill all the fields correctly.')
@@ -77,15 +88,53 @@ def userReg(request):
     else:
         form = RegisterForm()
 
-    return render(request, 'signup.html', {'page_name': 'signup', 'form': form,})
+    return render(request, 'signup.html', {'form': form,'page_name': 'signup'})
 
 def homeFun(request):
     return render(request,'home.html',{'page_name':'home'})
 
-def AdminDashboard(request):
-    return render(request, 'admin.html', {'page_name': 'admin'})
+
+def send_verification_email(request, user):
+    current_site = get_current_site(request)
+    subject = 'Verify your email'
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = email_verification_token.make_token(user)
+
+    # Render the HTML template
+    html_content = render_to_string('verification_email.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': uid,
+        'token': token,
+    })
+
+    # Create an email with both plain text and HTML content
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body="Please verify your email by clicking the link.",  # Fallback plain-text content
+        from_email='no-reply@yourdomain.com',
+        to=[user.email]
+    )
+    email.attach_alternative(html_content, "text/html")
+    email.send()
 
 
-def ValuatorDashboard(request):
-    return render(request, 'valuator.html', {'page_name': 'valuator'})
+def activate(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = get_user_model().objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
+        user = None
 
+    if user is not None and email_verification_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, 'Your email has been verified. You can now log in.')
+        return redirect('/login/')
+    else:
+        messages.error(request, 'Invalid activation link')
+        return redirect('/signup/')
+
+# class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+#     template_name = 'password_reset_confirm.html'
+#     form_class = SetPasswordForm

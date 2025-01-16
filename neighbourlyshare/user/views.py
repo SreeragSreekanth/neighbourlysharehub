@@ -2,23 +2,29 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Rating
 from .forms import RatingForm
-from notifications.models import Notification
 from exchange.models import ExchangeRequest
+from itemlisting.models import Item
+from exchange.models import ExchangeRequest
+from notifications.models import Notification
 
 @login_required
 def user_dashboard(request):
-    user = request.user
-    notifications = Notification.objects.filter(user=user).order_by('-created_at')
-    recent_requests = ExchangeRequest.objects.filter(
-        offered_by=user
-    ).select_related('requested_item', 'offered_item').order_by('-created_at')
+    approved_items = Item.objects.filter(user=request.user, status='approved')  # Fetch approved items for the logged-in user.
 
     context = {
-        'user': user,
-        'notifications': notifications,
-        'recent_requests': recent_requests,
+        'items_posted_count': Item.objects.filter(user=request.user).count(),
+        'accepted_requests_count': ExchangeRequest.objects.filter(offered_by=request.user, status='accepted').count(),
+        'requests_received_count': ExchangeRequest.objects.filter(requested_item__user=request.user).count(),
+        'notifications': Notification.objects.filter(user=request.user).order_by('-created_at'),
+        'recent_requests': ExchangeRequest.objects.filter(requested_item__user=request.user).order_by('-created_at')[:5],
+        'approved_items': approved_items,  # Add approved items to the context.
     }
+
     return render(request, 'user.html', context)
+
+
+
+
 
 
 @login_required

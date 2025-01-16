@@ -1,0 +1,45 @@
+{% extends 'valuator_layout.html' %}
+
+{% block content %}
+<div class="container my-5 text-center">
+    <h3 class="mb-4">Pending Complaints</h3>
+
+    <!-- Button to view resolved complaints -->
+    <a href="{% url 'resolved_complaints_list' %}" class="btn btn-primary mb-4">View Resolved Complaints</a>
+
+    {% if complaints %}
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>User</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ complaint.title }}</td>
+                        <td>{{ complaint.user.username }}</td>
+                        <td>{{ complaint.description|truncatewords:10 }}</td>  <!-- Truncate long descriptions -->
+                        <td>
+                            <span class="badge {% if complaint.status == 'pending' %}bg-warning{% elif complaint.status == 'resolved' %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ complaint.status|capfirst }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'resolve_complaint' complaint.id %}" class="btn btn-success btn-sm">Resolve</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No pending complaints.</p>
+    {% endif %}
+</div>
+{% endblock %}
