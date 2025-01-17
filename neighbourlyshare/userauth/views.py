@@ -14,8 +14,7 @@ from .tokens import email_verification_token
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
-# from django.contrib.auth.forms import SetPasswordForm
-# from django.contrib.auth.views import PasswordResetConfirmView
+from .decorators import role_required
 
 
 
@@ -37,12 +36,12 @@ def Login(request):
 
                 # Check if the user is a superuser
                 if user.is_superuser:
-                    return redirect('/admindash/')  # Redirect to the Django admin panel
+                    return redirect('admin')  # Redirect to the Django admin panel
 
                 elif user_obj.role == 'valuator':
-                    return redirect('/valuator/')  # Redirect to valuator dashboard
+                    return redirect('valuator')  # Redirect to valuator dashboard
                 else:
-                    return redirect('/user/')  # Redirect to regular user page
+                    return redirect('user')  # Redirect to regular user page
 
             else:
                 messages.error(request, 'Invalid username or password')
@@ -55,7 +54,6 @@ def Login(request):
 def logout_view(request):
     logout(request) 
     return redirect('/login/')
-
 
 def userReg(request):
     if request.method == 'POST':
@@ -81,7 +79,7 @@ def userReg(request):
                 send_verification_email(request, user)  # Send verification email
 
                 messages.success(request, 'Registration successful! Please verify your email to activate your account.')
-                return redirect('/login/')  
+                # return redirect('/login/')  
         else:
             messages.error(request, 'Please fill all the fields correctly.')
 
@@ -135,6 +133,5 @@ def activate(request, uidb64, token):
         messages.error(request, 'Invalid activation link')
         return redirect('/signup/')
 
-# class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-#     template_name = 'password_reset_confirm.html'
-#     form_class = SetPasswordForm
+def custom_403(request, exception=None):
+    return render(request, '403.html', status=403)

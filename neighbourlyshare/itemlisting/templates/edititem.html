@@ -32,6 +32,8 @@
                                         <div class="card-body text-center">
                                             <!-- Link to delete the image -->
                                             <a href="{% url 'deleteitemimage' image.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                            <!-- Hidden input to mark image as deleted -->
+                                            <input type="checkbox" name="deleted_images" value="{{ image.id }}" class="d-none" id="delete-{{ image.id }}">
                                         </div>
                                     </div>
                                 </div>
@@ -41,7 +43,6 @@
                         {% endif %}
 
                         <!-- Remove the image formset section if not needed (no image addition) -->
-                        <!--
                         <div id="image_formset" class="mb-4">
                             <h4 class="mb-3">Add New Images (Optional)</h4>
                             <div id="dynamic-image-forms">
@@ -62,7 +63,6 @@
                             </div>
                             <button type="button" id="add-image-button" class="btn btn-info">Add Another Image</button>
                         </div>
-                        -->
 
                         <!-- Submit and Cancel buttons -->
                         <div class="d-grid gap-2">

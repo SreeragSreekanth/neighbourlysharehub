@@ -5,9 +5,15 @@ from userauth.models import Register
 from django.contrib import messages
 from itemlisting.models import Item,ItemImage
 from django.contrib.auth.hashers import make_password
+from complaints.models import Complaint
+from category_management.models import Category
+from user.models import Rating
+from exchange.models import ExchangeRequest
+from userauth.decorators import role_required
 
 
 @login_required
+@role_required(['admin'])
 def add_valuator(request):
     print(request.method == 'POST')
     if request.method == 'POST':
@@ -26,22 +32,28 @@ def add_valuator(request):
     return render(request, 'addvaluator.html', {'form': form,})
 
 
+
 @login_required
+@role_required(['admin'])
 def AdminDashboard(request):
     total_users = Register.objects.count()
     total_items = Item.objects.count()
     total_valuators = Register.objects.filter(role='valuator').count()
+    total_transactions = ExchangeRequest.objects.filter(status='accepted').count()  # Adjust based on your status field
+
 
     context = {
         'total_users': total_users,
         'total_items': total_items,
         'total_valuators': total_valuators,
+        'total_transactions': total_transactions,
     }
 
     return render(request, 'admin.html', context)
 
-@login_required
 
+@login_required
+@role_required(['admin'])
 def Valuatorlist(request):
     # Query to get all valuators (users with 'valuator' role)
     valuators = Register.objects.filter(role='valuator')
@@ -50,30 +62,16 @@ def Valuatorlist(request):
 
 
 @login_required
+@role_required(['admin'])
 def Userlist(request):
     # Query to get all valuators (users with 'valuator' role)
     users = Register.objects.filter(role='user')
     
     return render(request, 'userlist.html', {'users': users})
 
-@login_required
-def adduser(request):
-    print(request.method == 'POST')
-    if request.method == 'POST':
-        form = ValuatorForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.role = 'user'
-            user.set_password(form.cleaned_data['password'])  # Make sure to hash the password
-            user.save()
-
-            messages.success(request, 'User added successfully!')
-            return redirect('userlist')  # Redirect to the valuator list page (adjust URL name as needed)
-    else: 
-        form = ValuatorForm()
-    return render(request,'adduser.html',{'form':form, })
 
 @login_required
+@role_required(['admin'])
 def deleteuser(request, id):
     # Try to get the user by ID
     try:
@@ -88,7 +86,9 @@ def deleteuser(request, id):
     # Redirect back to the user list page after deletion
     return redirect('userlist')
 
+
 @login_required
+@role_required(['admin'])
 def deletevaluator(request, id):
     # Try to get the user by ID
     try:
@@ -103,7 +103,9 @@ def deletevaluator(request, id):
     # Redirect back to the user list page after deletion
     return redirect('valuatorlist')
 
+
 @login_required
+@role_required(['admin'])
 def edituser(request, id):
     user = get_object_or_404(Register, id = id)  # Get user by ID
     if request.method == 'POST':
@@ -117,7 +119,10 @@ def edituser(request, id):
         form = ValuatorForm(instance=user)  # Prepopulate form with existing user data
     return render(request, 'edituser.html', {'form': form, 'user': user, })
 
+
+
 @login_required
+@role_required(['admin'])
 def editvaluator(request, id):
     valuator = get_object_or_404(Register, id = id)  # Get user by ID
     if request.method == 'POST':
@@ -134,14 +139,47 @@ def editvaluator(request, id):
         form = ValuatorForm(instance=valuator)  # Prepopulate form with existing user data
     return render(request, 'editvaluator.html', {'form': form, 'valuator': valuator,})
 
+
 @login_required
+@role_required(['admin'])
 def Userlist(request):
     # Query to get all valuators (users with 'valuator' role)
     users = Register.objects.filter(role='user')
     return render(request, 'userlist.html', {'users': users})
 
+
+
 @login_required
+@role_required(['admin'])
 def adminitem(request):
     """View to display approved items with valid categories (excluding 'Uncategorized')."""
     items = Item.objects.all
     return render(request, 'adminitem.html', {'items': items})
+
+
+
+@login_required
+@role_required(['admin'])
+def complaintlist(request):
+    """Shows a list of pending complaints."""
+    complaints = Complaint.objects.filter(status='resolved').order_by('-created_at')
+    return render(request, 'complaintview.html', {'complaints': complaints})
+
+
+
+@login_required
+@role_required(['admin'])
+def admin_viewitem(request, id):
+    item = get_object_or_404(Item, id=id)
+    ratings = Rating.objects.filter(item=item).order_by('-created_at')
+    reviews = ratings  # Assign reviews to ratings
+
+    images = ItemImage.objects.filter(item=item)
+    
+    return render(request, 'admin_viewitem.html', {
+        'item': item,
+        'ratings': ratings,
+        'reviews': reviews,
+        'images': images,
+        'range_5': range(1, 6),  # Pass a range to the template
+    })

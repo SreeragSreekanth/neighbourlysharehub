@@ -1,3 +1,4 @@
+
 // Function to handle fetch errors
 function handleFetchError(error) {
     console.error('Error fetching data:', error);
@@ -13,13 +14,14 @@ function updateBadge(badge, count) {
     }
 }
 
-// Function to update both unread messages and notifications
+// Function to update unread counts for messages, notifications, and requests
 function updateUnreadCount() {
     const messageBadge = document.getElementById('message-badge');
     const notificationBadge = document.getElementById('notification-badge');
+    const requestBadge = document.getElementById('request-badge');
 
     // Ensure badges exist before proceeding
-    if (!messageBadge || !notificationBadge) {
+    if (!messageBadge || !notificationBadge || !requestBadge) {
         console.error('Badge elements not found');
         return;
     }
@@ -45,6 +47,17 @@ function updateUnreadCount() {
         })
         .then(data => updateBadge(notificationBadge, data.unread_count))
         .catch(handleFetchError);
+
+    // Update new requests count
+    fetch('/requests/unread-count/')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => updateBadge(requestBadge, data.unread_count))
+        .catch(handleFetchError);
 }
 
 // Call the function on page load
@@ -53,3 +66,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update counts every 30 seconds
     setInterval(updateUnreadCount, 30000);
 });
+

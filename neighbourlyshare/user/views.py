@@ -6,8 +6,10 @@ from exchange.models import ExchangeRequest
 from itemlisting.models import Item
 from exchange.models import ExchangeRequest
 from notifications.models import Notification
+from userauth.decorators import role_required
 
 @login_required
+@role_required(['user'])
 def user_dashboard(request):
     approved_items = Item.objects.filter(user=request.user, status='approved')  # Fetch approved items for the logged-in user.
 
@@ -28,6 +30,7 @@ def user_dashboard(request):
 
 
 @login_required
+@role_required(['user'])
 def edit_review(request, id):
     review = get_object_or_404(Rating, id=id)
     
@@ -46,6 +49,7 @@ def edit_review(request, id):
     return render(request, 'edit_review.html', {'form': form, 'review': review})
 
 @login_required
+@role_required(['user'])
 def delete_review(request, id):
     review = get_object_or_404(Rating, id=id)
     

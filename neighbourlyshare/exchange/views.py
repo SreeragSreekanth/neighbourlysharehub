@@ -6,11 +6,16 @@ from django.contrib.auth.decorators import login_required
 from .forms import ExchangeRequestForm
 from django.contrib import messages
 from notifications.models import Notification
+from userauth.decorators import role_required
+from django.http import JsonResponse
+from .models import ExchangeRequest
+
 
 
 
 
 @login_required
+@role_required(['user'])
 def create_request(request, item_id):
     requested_item = get_object_or_404(Item, id=item_id)
 
@@ -39,7 +44,9 @@ def create_request(request, item_id):
     })
 
 
+
 @login_required
+@role_required(['user'])
 def incoming_requests(request):
     requests = ExchangeRequest.objects.filter(requested_item__user=request.user)
     return render(request, 'incoming_requests.html', {'requests': requests})
@@ -74,17 +81,17 @@ def respond_to_request(request, request_id):
         return redirect('incoming_requests')
     return render(request, 'respond_to_request.html', {'exchange_request': exchange_request})
 
-
-
+@login_required
+@role_required(['user'])
 def request_list(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
     # Sent requests
-    user_requests = ExchangeRequest.objects.filter(offered_by=request.user)
+    user_requests = ExchangeRequest.objects.filter(offered_by=request.user).order_by('-created_at')
 
     # Received requests
-    received_requests = ExchangeRequest.objects.filter(requested_item__user=request.user)
+    received_requests = ExchangeRequest.objects.filter(requested_item__user=request.user).order_by('-created_at')
 
     context = {
         'user_requests': user_requests,
@@ -93,7 +100,8 @@ def request_list(request):
     return render(request, 'request_list.html', context)
 
 
-
+@login_required
+@role_required(['user'])
 def request_detail(request, request_id):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -114,7 +122,8 @@ def request_detail(request, request_id):
 
 
 
-
+@login_required
+@role_required(['user'])
 def approve_request(request, request_id):
     exchange_request = get_object_or_404(ExchangeRequest, id=request_id)
     if exchange_request.status == 'pending':
@@ -123,6 +132,8 @@ def approve_request(request, request_id):
     return redirect('request_list')  # Redirect to the list of requests
 
 
+@login_required
+@role_required(['user'])
 def reject_request(request, request_id):
     exchange_request = get_object_or_404(ExchangeRequest, id=request_id)
     if exchange_request.status == 'pending':
@@ -131,7 +142,8 @@ def reject_request(request, request_id):
     return redirect('request_list')  # Redirect to the list of requests
 
 
-
+@login_required
+@role_required(['user'])
 def handle_request(request, request_id):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -165,3 +177,12 @@ def handle_request(request, request_id):
         exchange_request.save()
 
     return redirect('request_list')
+
+@login_required
+def get_new_requests_count(request):
+    # Filter pending requests where the logged-in user owns the requested item
+    count = ExchangeRequest.objects.filter(
+        requested_item__user=request.user,  # Assuming 'user' is the owner field in the Item model
+        status="pending"
+    ).count()
+    return JsonResponse({'unread_count': count})

@@ -14,6 +14,7 @@
             <p><strong>Requested Item:</strong> {{ exchange_request.requested_item.title }}</p>
             <p><strong>Offered Item:</strong> {{ exchange_request.offered_item.title }}</p>
             <p><strong>Offered By:</strong> {{ exchange_request.offered_by.username }}</p>
+            <p><strong>Requested To:</strong> {{ exchange_request.requested_item.user.username }}</p> <!-- Accessing the user from the requested item -->
             <p><strong>Message:</strong> {{ exchange_request.message }}</p>
             <p><strong>Status:</strong>
                 {% if exchange_request.status == "pending" %}

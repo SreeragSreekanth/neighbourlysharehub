@@ -12,5 +12,6 @@ urlpatterns = [
     path('requests/approve/<int:request_id>/', views.approve_request, name='approve_request'),
     path('requests/reject/<int:request_id>/', views.reject_request, name='reject_request'),
     path('requests/handle/<int:request_id>/', views.handle_request, name='handle_request'),
+    path('requests/unread-count/', views.get_new_requests_count, name='new_requests_count'),
 
 ]

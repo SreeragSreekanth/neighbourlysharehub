@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static  # Import the static helper function
+from django.conf.urls import handler403
+from userauth.views import custom_403
 
 
 urlpatterns = [
@@ -20,3 +22,4 @@ urlpatterns = [
 
     ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
 
+handler403 = custom_403

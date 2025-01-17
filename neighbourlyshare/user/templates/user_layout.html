@@ -35,8 +35,11 @@
                         <a class="nav-link text-white" href="{% url 'itemlist' %}">Items</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'request_list' %}">Requests</a>
-                    </li>
+                        <a class="nav-link text-white position-relative" href="{% url 'request_list' %}">
+                            Requests
+                            <span id="request-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;"></span>
+                        </a>
+                                            </li>
                     <li class="nav-item">
                         <a href="{% url 'message_inbox' %}" class="nav-link text-white position-relative">
                             Messages

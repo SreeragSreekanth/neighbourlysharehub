@@ -5,14 +5,17 @@ from itemlisting.models import Item
 from .forms import CategoryForm
 from django.contrib.auth.decorators import login_required
 from notifications.models import Notification
+from userauth.decorators import role_required
 
 @login_required
+@role_required(['valuator'])
 def category_list(request):
     """View to list all categories."""
     categories = Category.objects.all()
     return render(request, 'category_list.html', {'categories': categories})
 
 @login_required
+@role_required(['valuator'])
 def category_add(request):
     """View to add a new category."""
     if request.method == 'POST':
@@ -25,7 +28,9 @@ def category_add(request):
         form = CategoryForm()
     return render(request, 'category_add.html', {'form': form, })
 
+
 @login_required
+@role_required(['valuator'])
 def category_edit(request, pk):
     """View to edit an existing category."""
     category = get_object_or_404(Category, pk=pk)
@@ -39,7 +44,9 @@ def category_edit(request, pk):
         form = CategoryForm(instance=category)
     return render(request, 'category_edit.html', {'form': form, 'category': category,})
 
+
 @login_required
+@role_required(['valuator'])
 def category_delete(request, pk):
     """View to delete a category."""
     category = get_object_or_404(Category, pk=pk)
@@ -50,6 +57,7 @@ def category_delete(request, pk):
     return render(request, 'category_delete.html', {'category': category,})
 
 @login_required
+@role_required(['valuator'])
 def ValuatorDashboard(request):
     total_categories = Category.objects.count()
     total_pending_items = Item.objects.filter(status='pending').count()
@@ -65,18 +73,21 @@ def ValuatorDashboard(request):
 
 
 @login_required
+@role_required(['valuator'])
 def item_management(request):
     """Display approved items excluding 'Uncategorized'."""
     items = Item.objects.filter(status='approved').exclude(category__isnull=True)
     return render(request, 'item_management.html', {'items': items})
 
 @login_required
+@role_required(['valuator'])
 def approval_needed(request):
     """Display items that need approval."""
     items = Item.objects.filter(status='pending')
     return render(request, 'approval_needed.html', {'items': items})
 
 @login_required
+@role_required(['valuator'])
 def view_item(request, item_id):
     """View and edit an item if it is pending approval."""
     item = get_object_or_404(Item, id=item_id)
@@ -94,7 +105,9 @@ def view_item(request, item_id):
 
     return render(request, 'view_item.html', {'item': item, 'categories': categories})
 
+
 @login_required
+@role_required(['valuator'])
 def approve_item(request, item_id):
     """Approve an item and notify the user."""
     item = get_object_or_404(Item, id=item_id)
@@ -111,6 +124,7 @@ def approve_item(request, item_id):
     return redirect('item_management')
 
 @login_required
+@role_required(['valuator'])
 def reject_item(request, item_id):
     """Reject an item and notify the user."""
     item = get_object_or_404(Item, id=item_id)

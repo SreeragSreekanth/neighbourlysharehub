@@ -1,0 +1,84 @@
+{% extends 'admin_layout.html' %}
+
+{% block title %}
+    Admin View - {{ item.title }}
+{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="padding-bottom: 50px;">
+    <div class="card shadow-sm">
+        <div class="card-body position-relative">
+
+            <!-- Header Section -->
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <a href="{% url 'items' %}" class="btn btn-secondary">Back to Items</a>
+                <h2 class="mb-0 text-center flex-grow-1">Admin View: {{ item.title }}</h2>
+            </div>
+
+            <!-- Category Section -->
+            <div class="text-center mb-4">
+                <h5 class="text-muted">Category</h5>
+                <span class="badge bg-primary text-white py-2 px-4 rounded-pill">
+                    {{ item.category.name|default:"Uncategorized" }}
+                </span>
+            </div>
+
+            <!-- Images Section -->
+            <div class="mb-4">
+                <h5 class="text-muted text-center">Images</h5>
+                <div class="d-flex justify-content-center flex-wrap gap-3">
+                    {% for image in images %}
+                        <div class="p-2" style="width: 250px;">
+                            <img src="{{ image.image.url }}" class="img-fluid rounded shadow-sm w-100" alt="Item Image" style="height: 200px; object-fit: cover;">
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center">No images available for this item.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="mb-5">
+                <h5 class="text-muted text-center">Description</h5>
+                <div class="border rounded shadow-sm p-3">
+                    <p class="text-center">{{ item.description }}</p>
+                </div>
+            </div>
+
+            <!-- Posted Info Section -->
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <p><strong>Posted by:</strong> {{ item.user.username }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p><strong>Posted on:</strong> {{ item.date_posted|date:"d M Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Reviews Section -->
+            <div>
+                <h5 class="text-muted">Reviews</h5>
+                {% if reviews %}
+                    <ul class="list-group mb-4">
+                        {% for review in reviews %}
+                            <li class="list-group-item mb-3">
+                                <strong>{{ review.reviewer.username }}</strong>
+                                <div class="d-flex justify-content-start mb-2">
+                                    {% for i in range_5 %}
+                                        <i class="bi {% if review.rating >= i %}bi-star-fill{% else %}bi-star{% endif %} text-warning"></i>
+                                    {% endfor %}
+                                </div>
+                                <p class="mb-1">{{ review.review_text }}</p>
+                                <small class="text-muted">Posted on {{ review.created_at|date:"d M Y" }}</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">No reviews yet for this item.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

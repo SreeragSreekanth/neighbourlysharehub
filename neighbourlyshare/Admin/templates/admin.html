@@ -9,9 +9,9 @@
     <h2 class="text-center mb-4">Admin Dashboard</h2>
 
     <!-- Top Row: Analytics Cards -->
-    <div class="row g-4">
+    <div class="row g-4 mb-5"> <!-- Add bottom margin to create space -->
         <!-- Number of Users -->
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Total Users</h5>
@@ -22,7 +22,7 @@
         </div>
 
         <!-- Number of Items -->
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Total Items</h5>
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Number of Valuators -->
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
             <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Total Valuators</h5>
@@ -42,12 +42,23 @@
                 </div>
             </div>
         </div>
+
+        <!-- Total Transactions -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-3">Total Transactions</h5>
+                    <h3 class="mb-3 text-info">{{ total_transactions }}</h3>
+                    <p class="text-muted">Total number of successful exchanges or accepted requests.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Dashboard Sections: Management -->
-    <div class="row g-4 mt-4">
+    <div class="row g-4 mt-5">
         <!-- User Management Section -->
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">User Management</h5>
@@ -58,7 +69,7 @@
         </div>
 
         <!-- Item Management Section -->
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Item Management</h5>
@@ -69,7 +80,7 @@
         </div>
 
         <!-- Valuator Management Section -->
-        <div class="col-lg-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <h5 class="card-title mb-3">Valuator Management</h5>

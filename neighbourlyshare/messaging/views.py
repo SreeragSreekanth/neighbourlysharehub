@@ -6,8 +6,10 @@ from .forms import MessageForm
 from userauth.models import Register
 from django.db.models import Q
 from notifications.utils import create_notification  # Import the utility to create notifications
+from userauth.decorators import role_required 
 
 @login_required
+@role_required(['user'])
 def send_message(request, receiver_id):
     receiver = get_object_or_404(Register, id=receiver_id)
     
@@ -31,6 +33,7 @@ def send_message(request, receiver_id):
 
 
 @login_required
+@role_required(['user'])
 def message_inbox(request):
     conversations = (
         Message.objects.filter(Q(sender=request.user) | Q(receiver=request.user))
@@ -68,6 +71,7 @@ def message_inbox(request):
 
 
 @login_required
+@role_required(['user'])
 def conversation_detail(request, conversation_id):
     partner = get_object_or_404(Register, id=conversation_id)
 

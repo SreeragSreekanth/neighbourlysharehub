@@ -50,14 +50,6 @@
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-primary" {% if item.approved %}disabled{% endif %}>Save Changes</button>
                     
-                    {% if item.approved %}
-                        <span class="text-success">This item has been approved.</span>
-                    {% else %}
-                        <form method="POST" action="{% url 'approve_item' item.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">Approve Item</button>
-                        </form>
-                    {% endif %}
                 </div>
             </form>
 

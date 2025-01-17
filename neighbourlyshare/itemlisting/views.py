@@ -12,6 +12,7 @@ from django.db.models import Q
 from user.forms import RatingForm
 from user.models import Rating
 from notifications.utils import create_notification
+from userauth.decorators import role_required
 
 
 
@@ -20,6 +21,7 @@ from notifications.utils import create_notification
 
 # Create your views here.
 @login_required
+@role_required(['user'])
 def Displayitems(request):
     # Fetch all items (you can filter by user if needed)
     items = Item.objects.filter(user=request.user)
@@ -33,6 +35,7 @@ def Displayitems(request):
 
 
 @login_required
+@role_required(['user'])
 def additem(request):
     ImageFormSet = modelformset_factory(
         ItemImage, 
@@ -65,7 +68,7 @@ def additem(request):
                         image.item = item
                         image.save()
 
-                create_notification(user=request.user, message="Your item has been successfully added to the platform!")
+                
 
                 messages.success(request, 'Item added successfully!')
                 return redirect('itemlist')
@@ -87,6 +90,7 @@ def additem(request):
 
 
 @login_required
+@role_required(['user'])
 def deleteitem(request, id):
     # Retrieve the item using the item_id
     item = get_object_or_404(Item, pk=id)
@@ -114,6 +118,7 @@ def deleteitem(request, id):
 
 
 @login_required
+@role_required(['user'])
 def viewitem(request, id):
     item = get_object_or_404(Item, id=id)
     ratings = Rating.objects.filter(item=item).order_by('-created_at')
@@ -145,6 +150,7 @@ def viewitem(request, id):
 
 
 @login_required
+@role_required(['user'])
 def edititem(request, id):
     item = get_object_or_404(Item, pk=id)
     ImageFormSet = modelformset_factory(
@@ -221,6 +227,7 @@ def edititem(request, id):
 
 
 @login_required
+@role_required(['user'])
 def deleteitemimage(request, id):
     # Fetch the image
     image = get_object_or_404(ItemImage, pk=id)
@@ -238,6 +245,7 @@ def deleteitemimage(request, id):
     return redirect('edititem', id=image.item.id)
 
 @login_required
+@role_required(['user'])
 def item_listing(request):
     # Instantiate the form and process user input
     form = ItemSearchForm(request.GET)

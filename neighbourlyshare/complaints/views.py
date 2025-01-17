@@ -6,8 +6,10 @@ from itemlisting.models import Item
 from complaints.forms import ComplaintForm
 from notifications.models import Notification
 from notifications.utils import create_notification
+from userauth.decorators import role_required
 
 @login_required
+@role_required(['user'])
 def file_complaint(request):
     """Allows users to file a complaint about any issue."""
     if request.method == 'POST':
@@ -31,6 +33,7 @@ def file_complaint(request):
 
 
 @login_required
+@role_required(['valuator'])
 def complaints_list(request):
     """Shows a list of pending complaints."""
     complaints = Complaint.objects.filter(status='pending').order_by('-created_at')
@@ -40,6 +43,7 @@ def complaints_list(request):
 
 
 @login_required
+@role_required(['valuator'])
 def resolve_complaint(request, complaint_id):
     """Allows a valuator to resolve a complaint and send a notification."""
     complaint = get_object_or_404(Complaint, id=complaint_id)
@@ -62,6 +66,7 @@ def resolve_complaint(request, complaint_id):
     return render(request, 'resolve_complaint.html', {'complaint': complaint})
 
 @login_required
+@role_required(['valuator'])
 def resolved_complaints_list(request):
     """Shows a list of resolved complaints."""
     resolved_complaints = Complaint.objects.filter(status='resolved').order_by('-created_at')
