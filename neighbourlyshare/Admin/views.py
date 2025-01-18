@@ -9,11 +9,11 @@ from complaints.models import Complaint
 from category_management.models import Category
 from user.models import Rating
 from exchange.models import ExchangeRequest
-from userauth.decorators import role_required
+from userauth.decorators import superuser_required
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def add_valuator(request):
     print(request.method == 'POST')
     if request.method == 'POST':
@@ -34,7 +34,7 @@ def add_valuator(request):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def AdminDashboard(request):
     total_users = Register.objects.count()
     total_items = Item.objects.count()
@@ -53,7 +53,7 @@ def AdminDashboard(request):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def Valuatorlist(request):
     # Query to get all valuators (users with 'valuator' role)
     valuators = Register.objects.filter(role='valuator')
@@ -62,7 +62,7 @@ def Valuatorlist(request):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def Userlist(request):
     # Query to get all valuators (users with 'valuator' role)
     users = Register.objects.filter(role='user')
@@ -71,7 +71,7 @@ def Userlist(request):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def deleteuser(request, id):
     # Try to get the user by ID
     try:
@@ -88,7 +88,7 @@ def deleteuser(request, id):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def deletevaluator(request, id):
     # Try to get the user by ID
     try:
@@ -105,7 +105,7 @@ def deletevaluator(request, id):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def edituser(request, id):
     user = get_object_or_404(Register, id = id)  # Get user by ID
     if request.method == 'POST':
@@ -122,7 +122,7 @@ def edituser(request, id):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def editvaluator(request, id):
     valuator = get_object_or_404(Register, id = id)  # Get user by ID
     if request.method == 'POST':
@@ -141,7 +141,7 @@ def editvaluator(request, id):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def Userlist(request):
     # Query to get all valuators (users with 'valuator' role)
     users = Register.objects.filter(role='user')
@@ -150,7 +150,7 @@ def Userlist(request):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def adminitem(request):
     """View to display approved items with valid categories (excluding 'Uncategorized')."""
     items = Item.objects.all
@@ -159,16 +159,16 @@ def adminitem(request):
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def complaintlist(request):
     """Shows a list of pending complaints."""
-    complaints = Complaint.objects.filter(status='resolved').order_by('-created_at')
+    complaints = Complaint.objects.all().order_by('-created_at')
     return render(request, 'complaintview.html', {'complaints': complaints})
 
 
 
 @login_required
-@role_required(['admin'])
+@superuser_required
 def admin_viewitem(request, id):
     item = get_object_or_404(Item, id=id)
     ratings = Rating.objects.filter(item=item).order_by('-created_at')
@@ -183,3 +183,12 @@ def admin_viewitem(request, id):
         'images': images,
         'range_5': range(1, 6),  # Pass a range to the template
     })
+
+
+@login_required
+@superuser_required
+def transactionlist(request):
+    """Shows a list of accepted transactions."""
+    transactions = ExchangeRequest.objects.filter(status='accepted').order_by('-accepted_at')  # Ordering by accepted date
+    return render(request, 'transactions.html', {'transactions': transactions})
+   

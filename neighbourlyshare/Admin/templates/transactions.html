@@ -1,0 +1,42 @@
+{% extends 'admin_layout.html' %}
+
+{% block content %}
+<div class="container my-5 text-center">
+    <h3 class="mb-4">Transaction List</h3>
+
+    {% if transactions %}
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Offered By</th>
+                    <th>Offered Item</th>
+                    <th>Requested Item</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                    <th>Created Date</th>
+                    <th>Accepted Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ transaction.offered_by.username }}</td>
+                        <td>{{ transaction.offered_item.title }}</td>
+                        <td>{{ transaction.requested_item.title }}</td>
+                        <td>
+                            <span class="badge bg-success">Accepted</span>
+                        </td>
+                        <td>{{ transaction.message|truncatewords:10 }}</td>
+                        <td>{{ transaction.created_at|date:"Y-m-d H:i" }}</td>  <!-- Created Date -->
+                        <td>{{ transaction.accepted_at|date:"Y-m-d H:i" }}</td>  <!-- Accepted Date -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No transactions available.</p>
+    {% endif %}
+</div>
+{% endblock %}

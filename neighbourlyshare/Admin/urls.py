@@ -13,6 +13,7 @@ urlpatterns = [
     path('adminDash/valuatorlist/edit/<int:id>/', views.editvaluator, name="editvaluator"),
     path('adminDash/items/', views.adminitem, name="items"),
     path('adminDash/complaints', views.complaintlist,name="complaints"),
-    path('adminDash/adminitemlist/viewitem<int:id>',views.admin_viewitem,name="adminview_item")
-   
+    path('adminDash/adminitemlist/viewitem<int:id>',views.admin_viewitem,name="adminview_item"),
+    path('adminDash/transactions', views.transactionlist,name="transactions"),
+
 ]
