@@ -76,9 +76,9 @@ def userReg(request):
                 user.is_active = False
                 user.save()
 
+                messages.success(request, 'Registration successful! Please verify your email to activate your account.')
                 send_verification_email(request, user)  # Send verification email
 
-                messages.success(request, 'Registration successful! Please verify your email to activate your account.')
                 # return redirect('/login/')  
         else:
             messages.error(request, 'Please fill all the fields correctly.')

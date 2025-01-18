@@ -9,6 +9,14 @@
     <div class="col-12 col-md-6 col-lg-4">
         <div class="card shadow-sm mb-5">
             <div class="card-body">
+                {% if messages %}
+                    <div class="alert alert-info">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <h3 class="card-title text-center mb-4">Login</h3>
                 
                 <!-- Use POST method to securely send form data -->

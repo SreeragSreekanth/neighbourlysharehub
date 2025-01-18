@@ -6,13 +6,14 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero bg-primary text-white py-5" style="background-image: url('https://via.placeholder.com/1920x600'); background-size: cover; background-position: center;">
+<section class="hero bg-primary text-white py-5" style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/static/assets/neighbourlyshare.webp') no-repeat center center; background-size: contain; background-attachment: fixed;">
     <div class="container text-center">
-        <h1 class="display-4">Welcome to Neighbourly Share Hub!</h1>
+        <h1 class="display-4 fw-bold">Welcome to Neighbourly Share Hub!</h1>
         <p class="lead mt-3">A community-driven platform where you can share and exchange items with your neighbors.</p>
-        <a href="/signup" class="btn btn-light btn-lg mt-4">Join Now</a>
+        <a href="/signup" class="btn btn-outline-light btn-lg mt-4 shadow">Join Now</a>
     </div>
 </section>
+
 
 <!-- Rest of your home page content starts here -->
 <div class="container mt-5" style="padding-bottom: 80px;"> <!-- Add padding-bottom here -->
@@ -23,7 +24,6 @@
             <p class="mt-3">
                 Explore the wide variety of items available for sharing with your community.
             </p>
-            <a href="/explore" class="btn btn-primary mt-3">Explore The Items</a>
         </div>
     </div>
 

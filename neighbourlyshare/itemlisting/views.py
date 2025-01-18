@@ -153,13 +153,16 @@ def viewitem(request, id):
 @role_required(['user'])
 def edititem(request, id):
     item = get_object_or_404(Item, pk=id)
+    
+    # Create the modelformset for the ItemImage
     ImageFormSet = modelformset_factory(
         ItemImage, 
         form=ItemImageForm,
-        extra=1,
+        extra=1,  # Allow adding 1 new form at a time
         can_delete=True,
     )
 
+    # Ensure the user is authorized to edit this item
     if item.user.username != request.user.username:
         messages.error(request, "You are not authorized to edit this item.")
         return redirect('itemlist')
@@ -171,45 +174,44 @@ def edititem(request, id):
             request.FILES,
             queryset=ItemImage.objects.filter(item=item)
         )
-        
-        if item_form.is_valid() or image_formset.is_valid():
+
+        if item_form.is_valid() and image_formset.is_valid():
             try:
                 # Save the item
                 edited_item = item_form.save()
-                edited_item.status = 'pending'  # Assuming 'pending' is a valid status
-                edited_item.save() 
-                # Handle the formset
+                edited_item.status = 'pending'  # Set item status to 'pending'
+                edited_item.save()
+
+                # Handle image additions and updates
                 instances = image_formset.save(commit=False)
-                
-                # Save new images
                 for instance in instances:
-                    if instance.image:  # Only save if there's actually an image
+                    if instance.image:  # Only save if there's an image
                         instance.item = edited_item
                         instance.save()
-                
-                # Handle deletions
+
+                # Handle deletions (remove images that are marked for deletion)
                 for obj in image_formset.deleted_objects:
                     if obj.image:
                         if obj.image.path and os.path.exists(obj.image.path):
                             try:
-                                os.remove(obj.image.path)
+                                os.remove(obj.image.path)  # Delete the image file from filesystem
                             except Exception as e:
                                 print(f"Error deleting image file: {e}")
                     obj.delete()
 
-                # Save the formset to process any deletions
+                # Save the formset (this handles new and deleted images)
                 image_formset.save()
 
                 messages.success(request, "Item updated successfully!")
                 return redirect('itemlist')
-                
+
             except Exception as e:
                 messages.error(request, f"Error saving changes: {str(e)}")
         else:
+            messages.error(request, "Please correct the errors below.")
             for form in image_formset:
                 if form.errors:
                     print("Form errors:", form.errors)
-            messages.error(request, "Please correct the errors below.")
     else:
         item_form = ItemForm(instance=item)
         image_formset = ImageFormSet(queryset=ItemImage.objects.filter(item=item))
@@ -220,7 +222,6 @@ def edititem(request, id):
         'item': item,
         'existing_images': ItemImage.objects.filter(item=item)
     })
-
 
 
 

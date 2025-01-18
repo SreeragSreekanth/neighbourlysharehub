@@ -25,7 +25,11 @@
 
             <!-- Header Section -->
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <a href="{% url 'itemlist' %}" class="btn btn-secondary">Back</a>
+                {% if request.user != item.user %}
+                    <a href="{% url 'itemsearch' %}" class="btn btn-secondary">Back</a>
+                {% else %}
+                    <a href="{% url 'itemlist' %}" class="btn btn-secondary">Back</a>
+                {% endif %}
                 <h2 class="mb-0 text-center flex-grow-1">{{ item.title }}</h2>
             </div>
 
