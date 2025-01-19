@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}
+About Us
+{% endblock %}
+
+{% block content %}
+<!-- About Us Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="text-primary fw-bold">About Us</h2>
+            <p class="text-muted">Learn more about our mission and team</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="text-secondary">Who We Are</h3>
+                <p class="text-muted">
+                    Welcome to our platform! We are passionate about creating a community where individuals can connect, 
+                    share resources, and help each other. Our mission is to make sharing and collaboration easier, 
+                    accessible, and impactful for everyone.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h3 class="text-secondary">Our Mission</h3>
+                <p class="text-muted">
+                    We aim to build a sustainable sharing economy where people can exchange items, ideas, and support 
+                    without barriers. Trust and engagement are at the core of our mission to create a more connected world.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="text-primary">Why Choose Us?</h3>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <i class="bi bi-people-fill text-primary me-2"></i> Community-driven platform designed with your needs in mind.
+            </li>
+            <li class="list-group-item">
+                <i class="bi bi-tools text-primary me-2"></i> Easy-to-use tools for sharing and exchanging resources.
+            </li>
+            <li class="list-group-item">
+                <i class="bi bi-shield-lock-fill text-primary me-2"></i> Commitment to security and transparency in all interactions.
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h3 class="text-primary">Meet Our Team</h3>
+        </div>
+        <div class="row d-flex align-items-stretch">
+            <div class="col-md-4 text-center">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="{% static 'assets/gopi.jpg' %}" class="card-img-top rounded-circle w-50 mx-auto mt-3" alt="Gopi Krishna KM">
+                    <div class="card-body">
+                        <h5 class="card-title">Gopi Krishna KM</h5>
+                        <p class="card-text text-muted">Founder & CEO</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="{% static 'assets/edwin.jpg' %}" class="card-img-top rounded-circle w-50 mx-auto mt-3" alt="Edwin C Shony">
+                    <div class="card-body">
+                        <h5 class="card-title">Edwin C Shony</h5>
+                        <p class="card-text text-muted">Product Manager</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="{% static 'assets/Ajith.png' %}" class="card-img-top rounded-circle w-50 mx-auto mt-3" alt="Ajith John">
+                    <div class="card-body">
+                        <h5 class="card-title">Ajith John</h5>
+                        <p class="card-text text-muted">Community Lead</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

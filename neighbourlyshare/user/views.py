@@ -62,3 +62,10 @@ def delete_review(request, id):
         return redirect('viewitem', id=review.item.id)
     
     return render(request, 'confirm_delete_review.html', {'review': review})
+
+
+def privacy(request):
+    return render(request,'privacy.html')
+
+def faq(request):
+    return render(request,'faq.html')

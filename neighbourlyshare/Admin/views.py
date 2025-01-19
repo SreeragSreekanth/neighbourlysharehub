@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import ValuatorForm
+from .forms import ValuatorForm, EditForm
 from userauth.models import Register
 from django.contrib import messages
 from itemlisting.models import Item,ItemImage
@@ -36,8 +36,8 @@ def add_valuator(request):
 @login_required
 @superuser_required
 def AdminDashboard(request):
-    total_users = Register.objects.count()
-    total_items = Item.objects.count()
+    total_users = Register.objects.filter(role='user').count()
+    total_items = Item.objects.filter(status='approved').count()
     total_valuators = Register.objects.filter(role='valuator').count()
     total_transactions = ExchangeRequest.objects.filter(status='accepted').count()  # Adjust based on your status field
 
@@ -107,17 +107,21 @@ def deletevaluator(request, id):
 @login_required
 @superuser_required
 def edituser(request, id):
-    user = get_object_or_404(Register, id = id)  # Get user by ID
+    # Get the user object or return a 404 if not found
+    user = get_object_or_404(Register, id=id)
+
     if request.method == 'POST':
-        form = ValuatorForm(request.POST, instance=user)  # Pass the existing user to the form
+        form = EditForm(request.POST, instance=user)  # Bind form with data and user instance
         if form.is_valid():
-            password = make_password(password)
-            form.save()  # Save the updated data
-            messages.success(request, 'User added successfully!')
-            return redirect('userlist')  # Redirect to the user management page
+            form.save()  # Save the changes
+            messages.success(request, 'Changes saved successfully!')
+            return redirect('userlist')  # Redirect to the user list page
+        else:
+            messages.error(request, 'Error saving changes. Please check the form.')
     else:
-        form = ValuatorForm(instance=user)  # Prepopulate form with existing user data
-    return render(request, 'edituser.html', {'form': form, 'user': user, })
+        form = EditForm(instance=user)  # Prepopulate the form with user data
+
+    return render(request, 'edituser.html', {'form': form, 'user': user})
 
 
 
@@ -127,16 +131,16 @@ def editvaluator(request, id):
     valuator = get_object_or_404(Register, id = id)  # Get user by ID
     if request.method == 'POST':
         password = request.POST.get('password')
-        form = ValuatorForm(request.POST, instance=valuator)
+        form = EditForm(request.POST, instance=valuator)
         password = request.POST.get('password')
   # Pass the existing user to the form
         if form.is_valid():
             password = make_password(password)
             form.save()  # Save the updated data
-            messages.success(request, 'Valuator added successfully!')
+            messages.success(request, 'Save changes successfully!')
             return redirect('valuatorlist')  # Redirect to the user management page
     else:
-        form = ValuatorForm(instance=valuator)  # Prepopulate form with existing user data
+        form = EditForm(instance=valuator)  # Prepopulate form with existing user data
     return render(request, 'editvaluator.html', {'form': form, 'valuator': valuator,})
 
 

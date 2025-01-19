@@ -6,4 +6,8 @@ urlpatterns = [
     path('user/', views.user_dashboard,name="user"),
     path('review/edit/<int:id>/', views.edit_review, name='edit_review'),
     path('review/delete/<int:id>/', views.delete_review, name='delete_review'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('faq/', views.faq, name='faq'),
+
+
 ]

@@ -53,6 +53,7 @@ def Login(request):
 
 def logout_view(request):
     logout(request) 
+    messages.info(request, 'You have been logged out successfully.')
     return redirect('/login/')
 
 def userReg(request):
@@ -135,3 +136,6 @@ def activate(request, uidb64, token):
 
 def custom_403(request, exception=None):
     return render(request, '403.html', status=403)
+
+def about(request):
+    return render(request,'about.html')

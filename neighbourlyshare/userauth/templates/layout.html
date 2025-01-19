@@ -56,6 +56,10 @@
                             <a class="nav-link" href="/">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about' %}">About Us
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="/login/">Login</a>
                         </li>
                         <li class="nav-item">
@@ -83,9 +87,8 @@
         <div class="container">
             <p class="mb-0">
                 <a href="/about/" class="text-decoration-none mx-2">About Us</a> |
-                <a href="#privacy-policy" class="text-decoration-none mx-2">Privacy Policy</a> |
-                <a href="#contact-us" class="text-decoration-none mx-2">Contact Us</a> |
-                <a href="#faqs" class="text-decoration-none mx-2">FAQs</a>
+                <a href="{% url 'privacy' %}" class="text-decoration-none mx-2">Privacy Policy</a> |
+                <a href="{% url 'faq' %}" class="text-decoration-none mx-2">FAQs</a>
             </p>
             <p class="mt-1">© 2025 Neighbourly Share Hub. All Rights Reserved.</p>
         </div>
