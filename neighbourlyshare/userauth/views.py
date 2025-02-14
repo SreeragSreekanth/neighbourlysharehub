@@ -60,7 +60,7 @@ def userReg(request):
     if request.method == 'POST':
         password = request.POST.get('password')
 
-        form = RegisterForm(request.POST)
+        form = SignupForm(request.POST)
 
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -85,7 +85,7 @@ def userReg(request):
             messages.error(request, 'Please fill all the fields correctly.')
 
     else:
-        form = RegisterForm()
+        form = SignupForm()
 
     return render(request, 'signup.html', {'form': form,'page_name': 'signup'})
 

@@ -23,84 +23,18 @@
                 {% endif %}
                 
                 <!-- Handle POST request form submission -->
-                <form action="/signup/" method="POST">
+                <form method="POST">
                     {% csrf_token %}
-                    <!-- First Name -->
-                    <div class="mb-3">
-                        <label for="id_first_name" class="form-label">First Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon1">
-                                <i class="bi bi-person-fill"></i>
-                            </span>
-                            {{ form.first_name }}
-                        </div>
-                    </div>
-                
-                    <!-- Last Name -->
-                    <div class="mb-3">
-                        <label for="id_last_name" class="form-label">Last Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon2">
-                                <i class="bi bi-person-fill"></i>
-                            </span>
-                            {{ form.last_name }}
-                        </div>
-                    </div>
-                
-                    <!-- Username -->
-                    <div class="mb-3">
-                        <label for="id_username" class="form-label">Username</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon3">
-                                <i class="bi bi-person-fill"></i>
-                            </span>
-                            {{ form.username }}
-                        </div>
-                    </div>
-                
-                    <!-- Email Address -->
-                    <div class="mb-3">
-                        <label for="id_email" class="form-label">Email Address</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon4">
-                                <i class="bi bi-envelope-fill"></i>
-                            </span>
-                            {{ form.email }}
-                        </div>
-                    </div>
-                
-                    <!-- Phone Number -->
-                    <div class="mb-3">
-                        <label for="id_phone_number" class="form-label">Phone Number</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon5">
-                                <i class="bi bi-telephone-fill"></i>
-                            </span>
-                            {{ form.phone_number }}
-                        </div>
-                    </div>
-                
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text" id="basic-addon6">
-                                <i class="bi bi-lock-fill"></i>
-                            </span>
-                            {{ form.password }}
-                        </div>
-                    </div>
-                
+                    
+                    {{ form.as_p }}
                     <!-- Submit Button -->
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary btn-sm w-100">Sign Up</button>
                     </div>
                 
-                    <!-- Login Link -->
                     <div class="text-center mt-3">
-                        <p class="mb-0">Already have an account? <a href="/login/" class="text-decoration-none">Login</a></p>
+                        <p>Already have an account? <a href="/login/">Login</a></p>
                     </div>
-                
                 </form>
                 
             </div>

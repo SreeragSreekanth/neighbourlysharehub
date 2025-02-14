@@ -1,6 +1,7 @@
 /* Navbar customizations */
 .navbar {
-    background: linear-gradient(90deg, #007bff, #0056b3);
+    background: linear-gradient(90deg, #007bff, #0056b3) !important;
+    color: white;
 }
 
 .navbar-brand {
@@ -17,32 +18,21 @@
     text-decoration: underline;
 }
 
-/* Footer styling */
+/* Navbar adjustments to avoid transparency */
+.navbar-dark .navbar-nav .nav-link {
+    color: white !important;
+}
+
+
+/* Footer Styling */
 footer {
-    background: #343a40;
-    color: #adb5bd;
+    background-color: #007bff; /* Ensure background color matches */
 }
 
 footer a {
-    color: #f8f9fa;
+    color: #f8f9fa; /* White color for the links */
 }
 
 footer a:hover {
-    color: #ffc107;
-}
-
-/* Main content spacing */
-main {
-    margin-top: 5rem;
-}
-
-/* Button styling */
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    color: #ffc107; /* Yellow color when hovering over links */
 }
