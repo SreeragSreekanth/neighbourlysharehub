@@ -5,8 +5,7 @@ myenv/
 __pycache__/
 *.py[cod]
 
-# Ignore Django migrations
-migrations/
+
 
 # Ignore environment variable files
 .env
